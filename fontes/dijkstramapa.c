@@ -1,9 +1,9 @@
 /************************************
-	ACH2024 - Algoritmos e Estruturas de Dados II
-	Prof. Marcelo de Souza Lauretto
+    ACH2024 - Algoritmos e Estruturas de Dados II
+    Prof. Marcelo de Souza Lauretto
 
   Modulo: dijkstra.c
-	Implementacao do Algoritmo de Dijkstra
+    Implementacao do Algoritmo de Dijkstra
 
   Renomear este modulo com o seguinte padrao:
     d<numerousp1>_<numerousp2>.c
@@ -56,15 +56,36 @@ Os números serao do tipo inteiro longo.
 Exemplo de arquivo de requisicoes:
 
 4
-Conselheiro_Aguiar	177	Joao_Bley_Filho	124
-Paschoal_Ardito	7	Marques_De_Sao_Vicente	79
-Silvia	177	Silvia	24
-Euclides_Miragaia	9	Marques_De_Sao_Vicente	84
+Conselheiro_Aguiar  177 Joao_Bley_Filho 124
+Paschoal_Ardito 7   Marques_De_Sao_Vicente  79
+Silvia  177 Silvia  24
+Euclides_Miragaia   9   Marques_De_Sao_Vicente  84
 */
+
 int CarregaRequisicoes(char *nomearq, int *qtreq,
                         char RuaOrigem[][MAXSTRING],
                         char RuaDestino[][MAXSTRING],
-                        long *nrorigem, long *nrdestino) {
+                        long * nrorigem, long * nrdestino) {
+  FILE *fp;
+
+  fp = fopen(nomearq, "rt");
+  if (fp==NULL)
+     return(0);
+
+  if (fscanf(fp, "%d", &qtreq)!=1)
+    return(0);
+
+  for (i = 0; i < qtreq ; i++) {
+    if (fscanf(fp, "%c %d %c %d", RuaOrigem[i], &nrorigem[i], RuaDestino[i], &nrdestino[i]) != 4) { // Verificar com prof
+      fclose(fp);
+      return(0);
+    }
+
+  }
+
+  fclose(fp);
+  return(1);
+}
 
 
 }
