@@ -8,7 +8,7 @@
   Renomear este modulo com o seguinte padrao:
     d<numerousp1>_<numerousp2>.c
   Exemplo:
-    d1234567_7654321.c
+    d8517199_8516570.c
 
 *************************************/
 
@@ -65,18 +65,20 @@ Euclides_Miragaia   9   Marques_De_Sao_Vicente  84
 int CarregaRequisicoes(char *nomearq, int *qtreq,
                         char RuaOrigem[][MAXSTRING],
                         char RuaDestino[][MAXSTRING],
-                        long * nrorigem, long * nrdestino) {
+                        long *nrorigem, long *nrdestino) {
   FILE *fp;
-
-  fp = fopen(nomearq, "rt");
+    int i;
+  fp = fopen(nomearq, "r");
   if (fp==NULL)
      return(0);
 
-  if (fscanf(fp, "%d", &qtreq)!=1)
+  if (fscanf(fp, "%d", qtreq)!=1)
     return(0);
-
-  for (i = 0; i < qtreq ; i++) {
-    if (fscanf(fp, "%c %d %c %d", RuaOrigem[i], &nrorigem[i], RuaDestino[i], &nrdestino[i]) != 4) { // Verificar com prof
+    
+    char x[MAXSTRING];
+    char y[MAXSTRING];
+  for (i = 0; i < *qtreq ; i++) {
+    if (fscanf(fp, "%s %ld %s %ld", x, &(nrorigem[i]), y, &(nrdestino[i])) != 4) { // Verificar com prof
       fclose(fp);
       return(0);
     }
@@ -87,8 +89,6 @@ int CarregaRequisicoes(char *nomearq, int *qtreq,
   return(1);
 }
 
-
-}
 
 
 /* Dado um endereco de origem e um endereco de destino no grafo G,
@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
     for (idreq=0; idreq<qtreq; idreq++) {
 
       #ifdef _DEBUG_
-      printf("Requisicao: %s, %d a %s,%d\n", ruaorigem[idreq],nrorigem[idreq],
+      printf("Requisicao: %s, %ld a %s,%ld\n", ruaorigem[idreq],nrorigem[idreq],
              ruadestino[idreq], nrdestino[idreq]);
       #endif
       fpout = fopen(argv[3], "at");
