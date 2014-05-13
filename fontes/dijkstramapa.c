@@ -18,6 +18,7 @@
 #include "grafosmapa.h"
 #include "indheap.h"
 
+#define DBL_MAX    
 #define _DEBUG_
 
 /*
@@ -34,6 +35,42 @@
 void Dijkstra(tgrafo *G, tvertice v0,
               tpeso *customin, tvertice *antecessor) {
 
+    InicializaFonteUnica(&G, v0);
+    tapontador aux;
+    tvertice adj_aux;
+    tpeso aresta_aux;
+    long nrini_aux;
+    long nrfim_aux;
+    char * nomerua_aux;
+    tgrafo queue = *G;
+    while(queue->num_vertices !== 0) {
+        aux = ExtraiMin(*queue);
+        // for para cada adj /// mas não sei como pegar o array de adj, pq aparentemente ele retorna um so adj> RecuperaAdj
+       // mais ou menos chamada para o recupera
+      RecuperaAdj(*aux, aux, &adj_aux, &aresta_aux, &nrini_aux, &nrfim_aux, &nomerua_aux, &G);
+            // dentro do for:
+            Relaxamento(aux, &adj_aux, aresta_aux);
+    }
+    
+}
+
+void Relaxamento(tvertice u, tvertice *v, tpeso aresta) {
+    if (v->peso > (u->peso + aresta)) {
+        (*v)->peso = u->peso + aresta;
+    }
+}
+
+void InicializaFonteUnica(tgrafo *G, tvertice v0) {
+    tapontador p  = G->ListaAdj;
+    while (p != NULL) {
+        if (p == v0) {
+            p->peso = 0;
+        } else {
+            p->peso = DBL_MAX;
+        }
+        
+        p = p->prox;
+    }
 }
 
 
