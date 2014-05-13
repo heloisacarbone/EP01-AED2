@@ -43,19 +43,21 @@ void Dijkstra(tgrafo *G, tvertice v0,
     long nrfim_aux;
     char * nomerua_aux;
     tgrafo queue = *G;
-    while(queue->num_vertices !== 0) {
+    //>>>Aqui acho que falta aquele S<-{} que não entendi/lembro o que é
+    while(queue->num_vertices !== 0) {//>>>Não entendi da onde veio essa variável 'num_vertices'
         aux = ExtraiMin(*queue);
         // for para cada adj /// mas não sei como pegar o array de adj, pq aparentemente ele retorna um so adj> RecuperaAdj
        // mais ou menos chamada para o recupera
       RecuperaAdj(*aux, aux, &adj_aux, &aresta_aux, &nrini_aux, &nrfim_aux, &nomerua_aux, &G);
             // dentro do for:
+      //>>>Falta o for aqui, né?
             Relaxamento(aux, &adj_aux, aresta_aux);
     }
     
 }
 
 void Relaxamento(tvertice u, tvertice *v, tpeso aresta) {
-    if (v->peso > (u->peso + aresta)) {
+    if (v->peso > (u->peso + aresta)) {//>>>Aqui não seria (*v)->peso ??
         (*v)->peso = u->peso + aresta;
     }
 }
