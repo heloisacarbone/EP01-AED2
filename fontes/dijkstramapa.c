@@ -50,8 +50,12 @@ void Dijkstra(tgrafo *G, tvertice v0,
        // mais ou menos chamada para o recupera
       RecuperaAdj(*aux, aux, &adj_aux, &aresta_aux, &nrini_aux, &nrfim_aux, &nomerua_aux, &G);
             // dentro do for:
+          for (int i = 0; i < aux->num_vertices; i++)
+          {
+            Relaxamento(aux[i], &adj_aux, aresta_aux);
+          }
       //>>>Falta o for aqui, né?
-            Relaxamento(aux, &adj_aux, aresta_aux);
+            
     }
     
 }
