@@ -18,8 +18,101 @@
 #include "grafosmapa.h"
 #include "indheap.h"
 
-#define DBL_MAX    
+#define DBL_MAX    1.7976931348623157E+308    
 #define _DEBUG_
+
+/* 
+   Inicializa todos os ponteiros utilizados em Djikstra.
+   Recebe como parametros: 
+       int num_vertices - quantidade de vertices no Grafo.
+       tvertice v0 - vertice que sera tomado como ponto inicial.
+       tpeso customin - array contendo o peso de cada um dos vertices, é 
+            inicializado com o valor de DBL_MAX em todas as suas posicoes 
+            com excessao de v0 que recebe 0.
+       tvertice antecessor - array contendo o antecessor de cada um dos vértices,
+            é inicializado com o valor de -1, que é um correspondente a NULL nesse caso.
+       int visitados - array que ajuda a validar quais vertices ja foram visitados,
+            é inicializado com 0, com excessao da posicao de v0 que recebe 1, uma vez que ja foi visitado.
+*/
+void InicializaFonteUnica(int num_vertices, tvertice v0, 
+                          tpeso *customin, tvertice *antecessor, int *visitados) {
+    int i;
+    for(i = 0; i < num_vertices; i++) {
+        if (i == v0) { 
+            customin[i] = 0;
+            visitados[i] = 1;
+        } else { 
+            customin[i] = DBL_MAX;
+            visitados[i] = 0;
+        }
+        antecessor[i] = -1;
+    }
+}
+
+/*
+    Verifica se ainda existem vertices não visitados e retorna true 
+    se existirem e false caso contrário.
+    Recebe como parametros: 
+       int num_vertices - quantidade de vertices no Grafo.
+       int visitados - array que ajuda a validar quais vertices ja foram visitados
+*/ 
+int TemMaisVisitas(int num_vertices, int *visitados) {
+    int i;
+    for(i = 0; i < num_vertices; i++) {
+        if (visitados[i] == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/*
+    Retorna o índice do vertice que ainda nao foi visitado e possui o menor custo,
+    caso todos ja tenham sido visitados retorna -1.
+    Recebe como parametros: 
+       int num_vertices - quantidade de vertices no Grafo.
+       int visitados - array que ajuda a validar quais vertices ja foram visitados.
+       tpeso customin - array contendo o peso de cada um dos vertices.
+*/ 
+tvertice ExtraiMinimo(int num_vertices, int *visitados, tpeso *customin) {
+    tvertice min = -1;
+    tpeso aux_min = DBL_MAX;
+    int i;
+    for(i = 0; i < num_vertices; i++) {
+        if (visitados[i] == 0) {
+            if (aux_min > customin[i]) {
+                aux_min = customin[i];
+                min = i;
+            }
+        }
+    }
+    
+    return min;
+}
+
+/*
+  Faz o relaxamento dos vertices.
+  Recebe como parametros: 
+       tvertice v0 - Indice do vertice que esta analisando os outros.
+       tapontador adj - Adjacente do v0.
+       tpeso customin - array contendo o peso de cada um dos vertices.
+       tvertice antecessor - array contendo o antecessor de cada um dos vértices. 
+       tgrafo G - Grafo.
+*/ 
+void Relaxamento(tvertice v0, tapontador adj, 
+                 tpeso *customin, tvertice *antecessor, tgrafo *G){
+    
+    tvertice vAdj;
+    tpeso pAresta;
+    long nrini, nrfim;
+    char *nomerua[MAXSTRING];
+    RecuperaAdj(v0, adj, &vAdj, &pAresta, &nrini, &nrfim, &(*nomerua), G);
+    
+    if (customin[vAdj] > (customin[v0] + pAresta)) {
+        customin[vAdj] = (customin[v0] + pAresta);
+        antecessor[vAdj] = v0;
+    }
+}
 
 /*
   Algoritmo de Dijkstra
@@ -35,28 +128,41 @@
 void Dijkstra(tgrafo *G, tvertice v0,
               tpeso *customin, tvertice *antecessor) {
     
-}
-
-/* não é nem tvertice
-void Relaxamento(tvertice u, tvertice *v, tpeso aresta) {
-    if (v->peso > (u->peso + aresta)) {
-        (*v)->peso = u->peso + aresta;
-    }
-} 
-
-void InicializaFonteUnica(tgrafo *G, tvertice v0) {
-    tapontador p  = G->ListaAdj;
-    while (p != NULL) {
-        if (p == v0) {
-            p->peso = 0;
-        } else {
-            p->peso = DBL_MAX;
-        }
+    tapontador aux_adj;              
+    
+    /* Array que ajuda a saber quais vertices ja foram visitados */
+    int visitados[G->num_vertices];
+    
+    InicializaFonteUnica(G->num_vertices, v0, customin, antecessor, &(*visitados));
+    
+    while(TemMaisVisitas(G->num_vertices, visitados) == 1) {
+        tvertice menor = ExtraiMinimo(G->num_vertices, visitados, customin);
         
-        p = p->prox;
+        if (menor != -1) {
+            
+            // Atualiza visitado
+            visitados[menor] = 1;
+            
+            // Verifica se o vertice tem adjacentes 
+            if (ListaAdjVazia(menor, G) != 1) {
+                
+                // Faz o relaxamento de todos os adjacentes
+                do {
+                    if (aux_adj == NULL) {
+                        aux_adj = PrimeiroAdj(menor, G);
+                    } else {
+                        aux_adj = ProxAdj(menor, aux_adj, G);
+                    }
+                    Relaxamento(menor, aux_adj, &(*customin), &(*antecessor), G);
+                } while (FimListaAdj(menor, aux_adj, G) != 1);
+                
+                aux_adj = NULL;
+            }
+        }
     }
-} */
-
+    
+    
+}
 
 /* Carrega o arquivo de requisicoes de rota, devolvendo o status
   (1=sucesso, 0=fracasso).
