@@ -34,37 +34,15 @@
 */
 void Dijkstra(tgrafo *G, tvertice v0,
               tpeso *customin, tvertice *antecessor) {
-
-    InicializaFonteUnica(&G, v0);
-    tapontador aux;
-    tvertice adj_aux;
-    tpeso aresta_aux;
-    long nrini_aux;
-    long nrfim_aux;
-    char * nomerua_aux;
-    tgrafo queue = *G;
-    //>>>Aqui acho que falta aquele S<-{} que não entendi/lembro o que é
-    while(queue->num_vertices !== 0) {//>>>Não entendi da onde veio essa variável 'num_vertices'
-        aux = ExtraiMin(*queue);
-        // for para cada adj /// mas não sei como pegar o array de adj, pq aparentemente ele retorna um so adj> RecuperaAdj
-       // mais ou menos chamada para o recupera
-      RecuperaAdj(*aux, aux, &adj_aux, &aresta_aux, &nrini_aux, &nrfim_aux, &nomerua_aux, &G);
-            // dentro do for:
-          for (int i = 0; i < aux->num_vertices; i++)
-          {
-            Relaxamento(aux[i], &adj_aux, aresta_aux);
-          }
-      //>>>Falta o for aqui, né?
-            
-    }
     
 }
 
+/* não é nem tvertice
 void Relaxamento(tvertice u, tvertice *v, tpeso aresta) {
-    if (v->peso > (u->peso + aresta)) {//>>>Aqui não seria (*v)->peso ??
+    if (v->peso > (u->peso + aresta)) {
         (*v)->peso = u->peso + aresta;
     }
-}
+} 
 
 void InicializaFonteUnica(tgrafo *G, tvertice v0) {
     tapontador p  = G->ListaAdj;
@@ -77,7 +55,7 @@ void InicializaFonteUnica(tgrafo *G, tvertice v0) {
         
         p = p->prox;
     }
-}
+} */
 
 
 /* Carrega o arquivo de requisicoes de rota, devolvendo o status
@@ -109,27 +87,30 @@ int CarregaRequisicoes(char *nomearq, int *qtreq,
                         char RuaOrigem[][MAXSTRING],
                         char RuaDestino[][MAXSTRING],
                         long *nrorigem, long *nrdestino) {
-  FILE *fp;
+    FILE *fp;
     int i;
-  fp = fopen(nomearq, "r");
-  if (fp==NULL)
-     return(0);
+    fp = fopen(nomearq, "r");
+    if (fp==NULL)
+        return(0);
 
-  if (fscanf(fp, "%d", qtreq)!=1)
-    return(0);
+    if (fscanf(fp, "%d", qtreq)!=1)
+        return(0);
+
+    char auxOrigem[MAXSTRING];
+    char auxDestino[MAXSTRING];
     
-    char x[MAXSTRING];
-    char y[MAXSTRING];
-  for (i = 0; i < *qtreq ; i++) {
-    if (fscanf(fp, "%s %ld %s %ld", x, &(nrorigem[i]), y, &(nrdestino[i])) != 4) { // Verificar com prof
-      fclose(fp);
-      return(0);
+    for (i = 0; i < *qtreq ; i++) {
+        if (fscanf(fp, "%s %ld %s %ld", auxOrigem, &(nrorigem[i]), auxDestino, &(nrdestino[i])) != 4) { // Verificar com prof
+          fclose(fp);
+          return(0);
+        }
+
+        strcpy(auxOrigem, RuaOrigem[i]); 
+        strcpy(auxDestino, RuaDestino[i]); 
     }
 
-  }
-
-  fclose(fp);
-  return(1);
+    fclose(fp);
+    return(1);
 }
 
 

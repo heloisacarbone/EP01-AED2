@@ -1,6 +1,6 @@
 /************************************
-	ACH2024 - Algoritmos e Estruturas de Dados II
-	Prof. Marcelo de Souza Lauretto
+    ACH2024 - Algoritmos e Estruturas de Dados II
+    Prof. Marcelo de Souza Lauretto
 
   Modulo: indheap.c: implementacao de heap indireto
 

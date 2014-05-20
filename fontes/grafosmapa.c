@@ -149,7 +149,7 @@ void BuscaArestaRua(char* nomerua, long numero, tvertice *v, tapontador *p, tgra
 
   *v = BuscaDic(&(grafo->Ruas), nomerua);   // vertice inicial
   #ifdef _DEBUG_
-  printf("\nEncontrando aresta do endereco %s, %ld\n", nomerua, numero);
+  printf("\nEncontrando aresta do endereco %s, %d\n", nomerua, numero);
   printf("Vertices: %d, ", *v);
   #endif
   do {
@@ -240,7 +240,7 @@ void InsereAresta(tvertice v1, tvertice v2, char *nomerua, long nrini, long nrfi
       if (aux->nrini > nrini) {
         InsereDic(&(grafo->Ruas), nomerua, v1);
         #ifdef _DEBUG_
-        printf("Atualizacao de rua no dicionario: %s - %ld - %ld\n", nomerua, static_cast<void*>(v1), nrini);
+        printf("Atualizacao de rua no dicionario: %s - %ld - %ld\n", nomerua, v1, nrini);
         #endif
       }
     }
@@ -339,4 +339,3 @@ int main(int argc, char *argv[]) {
   return(1);
 }
 #endif
-
