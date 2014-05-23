@@ -1,4 +1,4 @@
 EP01-AED2
 =========
 
-Percorrendo caminhos em Grafos
+Dijkstra para achar o caminho mais curto.
