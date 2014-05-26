@@ -220,6 +220,17 @@ int CarregaRequisicoes(char *nomearq, int *qtreq,
 }
 
 
+void enfileirarRuas(tvertice vorig, tvertice vdest, char *nomesRuas, int nr_vertices, int *countRuas, tvertice *antecessor) {
+    tapontador BuscaRuaVert(tvertice v, char* nomerua, tgrafo *grafo);
+    int i;
+    for (i = 0; i < nr_vertices; i++) {
+        nomesRuas[i] = NULL;
+    }
+    
+    
+}
+
+
 
 /* Dado um endereco de origem e um endereco de destino no grafo G,
    esta funcao chama o algoritmo de Dijkstra e escolhe a rota de menor
@@ -248,6 +259,44 @@ int CarregaRequisicoes(char *nomearq, int *qtreq,
 void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
                                   char *ruadest, long nrdest, tgrafo *G) {
 
+    tpeso customin[G->num_vertices];
+    tvertice antecessor[G->num_vertices];
+    tvertice vorig, vdest;
+    tapontador aorig, adest;
+	
+	BuscaArestaRua(&(*ruaorig), nrorig, &vorig, &aorig, &(*G));
+	vorig = aorig->vertice;
+	BuscaArestaRua(&(*ruadest), nrdest, &vdest, &adest, &(*G));
+	vdest = adest->vertice;
+    
+    Dijkstra(G, vorig, &customin, &antecessor);
+
+    char nomesRuas[G->num_vertices];
+    int countRuas;
+    
+    enfileirarRuas(vorig, vdest, &nomesRuas, G->num_vertices, countRuas, antecessor);
+    
+
+    /*
+        - Nome da rua de origem 
+        - N de origem (inteiro longo)
+        - Nome da rua de destino 
+        - N de destino (inteiro longo)
+        - Custo minimo (double)
+        - N de ruas distintas do endere origem ao endere de destino (inteiro)
+        3
+        I 64 P 11 33.300000 5
+        I
+        G
+        M
+        O
+        P
+        G 26 P 106 28.800000 2
+        G
+        P
+        J 64 O 19 24.700000 3
+        J
+     * /
 
 }
 
