@@ -280,16 +280,12 @@ void enfileirarRuas(tvertice vorig, tvertice vdest, char *nomesRuas,
     
 }
 
-
-void ImprimeRua (FILE *file, long nrorig, long nrdest, long distancia, tapontador *pilha, int *topo){
-    
-    fprintf(file, "&s %d %s &d %ld %d\n", (pilha[*topo])->nomerua, nrorig, (pilha[0])->nomerua, nrdest, distancia, *topo + 1);
-    while (*topo!=0){
-        fprintf(file, "%s\n", pilha[*topo]);
-    }
-    fprintf(file, "&s\n\n", pilha[*topo]); 
-}
-
+/*
+    Distancia entre o num de inicio e o num de destino em uma rua.
+    Recebe como parametros:
+        long nrorig - numero de origem
+        long nrdest - numero de destino
+ */ 
 long Distancia(long nrorig, long nrdest) {
     if (nrorig > nrdest) 
         return nrorig - nrdest;
@@ -335,15 +331,15 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
     vdest1 = adest->vertice;
     
     long mindist;
-    char caso;
+    char *caso;
     
     if (aorig == adest) {
         caso = "A";
         mindist = Distancia(nrorig, nrdest);
     } else {
-    
-        Dijkstra(G, vorig0, &customin0, &antecessor0);
-        Dijkstra(G, vorig1, &customin1, &antecessor1);
+        
+        Dijkstra(G, vorig0, &(*customin0), &(*antecessor0));
+        Dijkstra(G, vorig1, &(*customin1), &(*antecessor1));
         
         long B = customin0[vdest0] + Distancia(nrorig,aorig->nrini) + Distancia(nrdest,adest->nrini);
         long C = customin0[vdest1] + Distancia(nrorig,aorig->nrini) + Distancia(nrdest,adest->nrfim);
@@ -365,32 +361,30 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
         }
     }
     
-    char nomesRuas[G->num_vertices - 1];
-    int countRuas = 0;
+    char *nomesRuas[G->num_vertices - 1];
+    int *countRuas = 0;
     
     if (caso == "A") {
         nomesRuas[0] = aorig->nomerua;
         countRuas = countRuas + 1;
-    } else if (caso == "B") {
-        enfileirarRuas(vorig0, vdest0, &nomesRuas, G->num_vertices, &countRuas, antecessor0, G);
+    } else if (caso == "B") {        
+        enfileirarRuas(vorig0, vdest0, &(**nomesRuas), G->num_vertices, &(*countRuas), antecessor0, G);
     } else if (caso == "C") {
-        enfileirarRuas(vorig0, vdest1, &nomesRuas, G->num_vertices, &countRuas, antecessor0, G);
+        enfileirarRuas(vorig0, vdest1, &(**nomesRuas), G->num_vertices, &(*countRuas), antecessor0, G);
     } else if (caso == "D") {
-        enfileirarRuas(vorig1, vdest0, &nomesRuas, G->num_vertices, &countRuas, antecessor1, G);
+        enfileirarRuas(vorig1, vdest0, &(**nomesRuas), G->num_vertices, &(*countRuas), antecessor1, G);
     } else {
-        enfileirarRuas(vorig1, vdest1, &nomesRuas, G->num_vertices, &countRuas, antecessor1, G);
+        enfileirarRuas(vorig1, vdest1, &(**nomesRuas), G->num_vertices, &(*countRuas), antecessor1, G);
     }
     
-    fprintf(fp, "%s %d %s %d %ld %d\n", (ruaorig, nrorig, ruadest, nrdest, mindist, countRuas));
+    fprintf(fp,"%s %ld %s %ld %ld %d\n", ruaorig, nrorig, ruadest, nrdest, mindist, *countRuas);
     
     int i;
     
-    for (i = 0; i < countRuas; i++) {
+    for (i = 0; i < *countRuas; i++) {
         fprintf(fp, "%s\n", nomesRuas[i]);
     }
-    
 }
-    
 
 /*
   Funcao principal do programa: Carrega o grafo, carrega e executa a lista
