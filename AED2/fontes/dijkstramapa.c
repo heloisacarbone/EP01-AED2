@@ -219,27 +219,65 @@ int CarregaRequisicoes(char *nomearq, int *qtreq,
     return(1);
 }
 
+/*
+  Checa se o array de ruas ja possui a rua a ser inserida, caso ja esteja 
+  na lista retorna 1 (verdadeiro), caso contrario 0 (falso)
+  Recebe como parametros: 
+       char *ruas - Array que contem os nomes de ruas.
+       int num_ruas - Numero de ruas que ja estao no array.
+       char rua - Nome da rua a ser inserida no array.
+*/ 
+int checaRuaEnfileirada(char *ruas, int num_ruas, char rua) {
+    int i;
+    for (i = 0; i < num_ruas; i++) {
+        if (ruas[i] == rua) {
+            return 1;
+        }
+    }
+    
+    return 0;
+}
 
+/*
+  Enfileira as ruas que fazem o caminho com custo minimo.
+  Recebe como parametros: 
+       tvertice vorig - Vertice de inicio.
+       tvertice vdest - Vertice de destino.
+       char *nomesRuas - Array com a fila de ruas.
+       int nr_vertices - Numero de vertices no grafo.
+       int *countRuas - Numero de ruas na fila de ruas.
+       tvertice *antecessor - Array de antecessores dos vertices.
+       tgrafo *G - Grafo.
+*/
 void enfileirarRuas(tvertice vorig, tvertice vdest, char *nomesRuas, 
                     int nr_vertices, int *countRuas, tvertice *antecessor, tgrafo *G) {
     
     // Falta acabar essa funcao
-                        
+    int temMaisVertice = 1;
     tvertice auxAtual;
     tvertice auxPred = vorig;
-    int i;
     
+    int i;
     for (i = 0; i < nr_vertices; i++) {
-        nomesRuas[i] = NULL;
+        nomesRuas[i] = "";
     }
     
-    while (auxAtual != NULL) {
+    while (temMaisVertice == 1) {
         int j;
         for(j = 0; j < nr_vertices; j++) {
             if (antecessor[j] == auxPred) {
-                countRuas = countRuas + 1;
-                char nomeRua;
-                BuscaArestaRua(&(*nomeRua), nrdest, &vdest, &adest, &(*G));
+                auxAtual = j;
+                tapontador aresta = BuscaAresta(auxPred, auxAtual, G);
+                char nomeRua = *aresta->nomerua;
+                
+                if (checaRuaEnfileirada(nomesRuas, *countRuas, nomeRua) != 1) {
+                    nomesRuas[*countRuas] = nomeRua;
+                    countRuas = countRuas + 1;
+
+                }
+                auxPred = auxAtual;
+                if (auxPred == vdest) 
+                    temMaisVertice = 0;
                 break;
             }
         }
@@ -247,13 +285,14 @@ void enfileirarRuas(tvertice vorig, tvertice vdest, char *nomesRuas,
     
 }
 
+
 void ImprimeRua (FILE *file, long nrorig, long nrdest, long distancia, tapontador *pilha, int *topo){
-	
-	fprintf(file, "&s %d %s &d %ld %d\n", (pilha[*topo])->nomerua, nrorig, (pilha[0])->nomerua, nrdest, distancia, *topo + 1);
-	while (*topo!=0){
-		fprintf(file, "%s\n", pilha[*topo]);
-	}
-	fprintf(file, "&s\n\n", pilha[*topo]); 
+    
+    fprintf(file, "&s %d %s &d %ld %d\n", (pilha[*topo])->nomerua, nrorig, (pilha[0])->nomerua, nrdest, distancia, *topo + 1);
+    while (*topo!=0){
+        fprintf(file, "%s\n", pilha[*topo]);
+    }
+    fprintf(file, "&s\n\n", pilha[*topo]); 
 }
 
 long Distancia(long nrorig, long nrdest) {
@@ -294,11 +333,11 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
     tvertice antecessor0[G->num_vertices], antecessor1[G->num_vertices];
     tvertice vorig0, vorig1, vdest0, vdest1;
     tapontador aorig, adest;
-	
-	BuscaArestaRua(&(*ruaorig), nrorig, &vorig0, &aorig, &(*G));
-	vorig1 = aorig->vertice;
-	BuscaArestaRua(&(*ruadest), nrdest, &vdest0, &adest, &(*G));
-	vdest1 = adest->vertice;
+    
+    BuscaArestaRua(&(*ruaorig), nrorig, &vorig0, &aorig, &(*G));
+    vorig1 = aorig->vertice;
+    BuscaArestaRua(&(*ruadest), nrdest, &vdest0, &adest, &(*G));
+    vdest1 = adest->vertice;
     
     long mindist;
     char caso;
@@ -338,16 +377,16 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
         nomesRuas[0] = aorig->nomerua;
         countRuas = countRuas + 1;
     } else if (caso == "B") {
-        enfileirarRuas(vorig0, vdest0, &nomesRuas, G->num_vertices, countRuas, antecessor0);
+        enfileirarRuas(vorig0, vdest0, &nomesRuas, G->num_vertices, &countRuas, antecessor0, G);
     } else if (caso == "C") {
-        enfileirarRuas(vorig0, vdest1, &nomesRuas, G->num_vertices, countRuas, antecessor0);
+        enfileirarRuas(vorig0, vdest1, &nomesRuas, G->num_vertices, &countRuas, antecessor0, G);
     } else if (caso == "D") {
-        enfileirarRuas(vorig1, vdest0, &nomesRuas, G->num_vertices, countRuas, antecessor1);
+        enfileirarRuas(vorig1, vdest0, &nomesRuas, G->num_vertices, &countRuas, antecessor1, G);
     } else {
-        enfileirarRuas(vorig1, vdest1, &nomesRuas, G->num_vertices, countRuas, antecessor1);
+        enfileirarRuas(vorig1, vdest1, &nomesRuas, G->num_vertices, &countRuas, antecessor1, G);
     }
     
-    fprintf(fp, "%s %d %s &d %ld %d\n", (ruaorig, nrorig, ruadest, nrdest, mindist, countRuas);
+    fprintf(fp, "%s %d %s %d %ld %d\n", (ruaorig, nrorig, ruadest, nrdest, mindist, countRuas));
     
     int i;
     
