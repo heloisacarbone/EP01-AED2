@@ -257,11 +257,6 @@ void enfileirarRuas(tvertice vorig, tvertice vdest, char *nomesRuas,
     tvertice auxAtual;
     tvertice auxPred = vorig;
     
-    int i;
-    for (i = 0; i < nr_vertices; i++) {
-        nomesRuas[i] = "";
-    }
-    
     while (temMaisVertice == 1) {
         int j;
         for(j = 0; j < nr_vertices; j++) {
