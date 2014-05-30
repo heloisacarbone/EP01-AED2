@@ -193,13 +193,16 @@ int CarregaRequisicoes(char *nomearq, int *qtreq,
                         char RuaOrigem[][MAXSTRING],
                         char RuaDestino[][MAXSTRING],
                         long *nrorigem, long *nrdestino) {
+                            
+    printf("CARREGA REQ\n");
+    
     FILE *fp;
     int i;
-    fp = fopen(nomearq, "r");
-    if (fp==NULL)
+    fp = fopen(nomearq, "rt");
+    if (fp == NULL)
         return(0);
 
-    if (fscanf(fp, "%d", qtreq)!=1)
+    if (fscanf(fp, "%d", qtreq) != 1)
         return(0);
 
     char auxOrigem[MAXSTRING];
@@ -211,13 +214,17 @@ int CarregaRequisicoes(char *nomearq, int *qtreq,
           return(0);
         }
 
-        strcpy(auxOrigem, RuaOrigem[i]); 
-        strcpy(auxDestino, RuaDestino[i]); 
+        printf("%s\n", auxOrigem);
+        strcpy(RuaOrigem[i], auxOrigem);
+        printf("%s\n", RuaOrigem[i]); 
+        strcpy(RuaDestino[i], auxDestino); 
     }
 
     fclose(fp);
     return(1);
+    
 }
+
 
 /*
   Checa se o array de ruas ja possui a rua a ser inserida, caso ja esteja 
@@ -252,7 +259,6 @@ int checaRuaEnfileirada(char *ruas, int num_ruas, char rua) {
 void enfileirarRuas(tvertice vorig, tvertice vdest, char *nomesRuas, 
                     int nr_vertices, int *countRuas, tvertice *antecessor, tgrafo *G) {
     
-    // Falta acabar essa funcao
     int temMaisVertice = 1;
     tvertice auxAtual;
     tvertice auxPred = vorig;
@@ -277,7 +283,6 @@ void enfileirarRuas(tvertice vorig, tvertice vdest, char *nomesRuas,
             }
         }
     }
-    
 }
 
 /*
@@ -416,10 +421,10 @@ int main(int argc, char *argv[]) {
 
     for (idreq=0; idreq<qtreq; idreq++) {
 
-      #ifdef _DEBUG_
+      //#ifdef _DEBUG_
       printf("Requisicao: %s, %ld a %s,%ld\n", ruaorigem[idreq],nrorigem[idreq],
              ruadestino[idreq], nrdestino[idreq]);
-      #endif
+      //#endif
       fpout = fopen(argv[3], "at");
       ImprimeMelhorRota(fpout, ruaorigem[idreq], nrorigem[idreq],
                                ruadestino[idreq], nrdestino[idreq], &G);
@@ -431,4 +436,3 @@ int main(int argc, char *argv[]) {
 
   return(1);
 }
-
