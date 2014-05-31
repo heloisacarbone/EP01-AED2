@@ -9,7 +9,12 @@ public class Aresta {
 	public Aresta(Vertice v1, Vertice v2, int peso) {
 		this.v1 = v1;
 		this.v2 = v2;
-		this.peso = peso;
+		this.peso = calcpeso(v1, v2);
+	}
+	public int calcpeso(Vertice x, Vertice y){
+		int n = (x.getX() - y.getX())^2;
+		int m = (x.getY() - y.getY())^2;
+		return math.sqrt(n+m);
 	}
 
 	public int getPeso() {
