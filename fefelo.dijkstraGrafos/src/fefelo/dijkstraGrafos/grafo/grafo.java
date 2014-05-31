@@ -4,13 +4,26 @@ import fefelo.dijkstraGrafos.grafo.Aresta;
 import java.awt.List;
 
 public class grafo {
-	private List[] adjList;
-	// Não sei direito o que usar, mas tem que ser um Array que tem como chave o Vertice e que leva a uma lista ligada de arestas adjacentes do vertice.
-	private int num_vertices;
-	
-	public grafo(int num_vertices) {
-		this.num_vertices = num_vertices;
-		this.adjList = new List[num_vertices];
+	private List<Vertice> adjList = new arrayList<Vertice>();
+
+
+	public startGrafo(List<Vertice> list) {
+		this.adjList.addAll(list);
+	}
+	public addvertice(Vertice x){
+		this.adjList.add(x);
+	}
+	public List<Vertice> getgrafo(){
+		return this.adjlist;
+	}
+	public Vertice retornavertice(String x){
+		
+		for(int i = 0; i < getgrafo().size(); i++){
+			if(x.equals(this.getgrafo().get(i).getZ();
+			
+				return this.getgrafo().get(i);
+		}
+		return null;
 	}
 
 }
