@@ -6,10 +6,18 @@ public class Vertice {
 
 	private int x;
 	private int y;
+	private String z; // facilitar dando um nome pra cada vertice
 	
-	public Vertice(int x, int y) {
+	public Vertice(String z, int x, int y) {
 		this.setX(x);
 		this.setY(y);
+		this.setZ(z);
+	}
+	public String getZ(){
+		return z;
+	}
+	public String setZ(String z){
+		this.z = z;
 	}
 
 	public int getX() {
