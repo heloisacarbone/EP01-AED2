@@ -138,7 +138,6 @@ void Dijkstra(tgrafo *G, tvertice v0,
         int menor = ExtraiMinimo(G->num_vertices, visitados, customin);
       
         if (menor != -1) {
-            printf("Menor: %d\n", menor);
        
             visitados[menor] = 1;
     
@@ -148,7 +147,6 @@ void Dijkstra(tgrafo *G, tvertice v0,
                 // Faz o relaxamento de todos os adjacentes
                 aux_adj = PrimeiroAdj(menor, G);
                 while (aux_adj != NULL) {
-                    printf("Adj: %d\n",aux_adj->vertice);
                     Relaxamento(menor, aux_adj, &(*customin), &(*antecessor), G);
                     aux_adj = ProxAdj(menor, aux_adj, G);
                 } 
@@ -239,40 +237,26 @@ int checaRuaEnfileirada(char *ruas, int num_ruas, char rua) {
 /*
   Enfileira as ruas que fazem o caminho com custo minimo.
   Recebe como parametros: 
-       tvertice vorig - Vertice de inicio.
        tvertice vdest - Vertice de destino.
        char *nomesRuas - Array com a fila de ruas.
-       int nr_vertices - Numero de vertices no grafo.
        int *countRuas - Numero de ruas na fila de ruas.
        tvertice *antecessor - Array de antecessores dos vertices.
        tgrafo *G - Grafo.
 */
-void enfileirarRuas(tvertice vorig, tvertice vdest, char *nomesRuas, 
-                    int nr_vertices, int *countRuas, tvertice *antecessor, tgrafo *G) {
-    
-    int temMaisVertice = 1;
-    tvertice auxAtual;
-    tvertice auxPred = vorig;
-    
-    while (temMaisVertice == 1) {
-        int j;
-        for(j = 0; j < nr_vertices; j++) {
-            if (antecessor[j] == auxPred) {
-                auxAtual = j;
-                tapontador aresta = BuscaAresta(auxPred, auxAtual, G);
-                char nomeRua = *aresta->nomerua;
-                
-                if (checaRuaEnfileirada(nomesRuas, *countRuas, nomeRua) != 1) {
-                    nomesRuas[*countRuas] = nomeRua;
-                    countRuas = countRuas + 1;
-
-                }
-                auxPred = auxAtual;
-                if (auxPred == vdest) 
-                    temMaisVertice = 0;
-                break;
-            }
+void enfileirarRuasInvertidas(tvertice vdest, tapontador *nomesRuas, int *countRuas, tvertice *antecessor, tgrafo *G) {
+    printf("-----------enfileirando----------\n");
+    tvertice auxAtual = vdest;
+    tvertice auxPred = antecessor[vdest];
+    printf("AuxAtual: %d, AuxPred: %d\n", auxAtual, auxPred);
+    tapontador aresta;
+    while (auxPred != -1){
+        aresta = BuscaAresta(auxPred, auxAtual, G);
+        if (strcmp((nomesRuas[(*countRuas) - 1]->nomerua), (aresta->nomerua)) != 0){
+            *countRuas = (*countRuas) + 1;
+            nomesRuas[*countRuas] = aresta;
         }
+        auxAtual = auxPred;
+        auxPred = antecessor[auxAtual]; 
     }
 }
 
@@ -396,26 +380,35 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
         
     }
     
-    printf("Escolhas: Caso - %s, MinDist: %f", caso, mindist);
+    printf("Escolhas: Caso - %s, MinDist: %f\n", caso, mindist);
     
-   /*Segmentation Fault nessa parte. mais especificamente no enfileirarRuas. REVER
-    * 
-    *  char *nomesRuas[G->num_vertices - 1];
-    int *countRuas = 0;
+    tapontador nomesRuas[G->num_vertices];
+    int countRuas = 0;
     
     if (caso == "A") {
-        nomesRuas[0] = aorig->nomerua;
+        printf("CASO A \n");
+        nomesRuas[0] = aorig;
         countRuas = countRuas + 1;
     } else if (caso == "B") {        
-        enfileirarRuas(vorig0, vdest0, &(**nomesRuas), G->num_vertices, &(*countRuas), antecessor0, G);
+        printf("CASO B \n");
+        enfileirarRuasInvertidas(vdest0, nomesRuas, &countRuas, antecessor0, G);
     } else if (caso == "C") {
-        enfileirarRuas(vorig0, vdest1, &(**nomesRuas), G->num_vertices, &(*countRuas), antecessor0, G);
+        printf("CASO C \n");
+        enfileirarRuasInvertidas(vdest1, nomesRuas, &countRuas, antecessor0, G);
     } else if (caso == "D") {
-        enfileirarRuas(vorig1, vdest0, &(**nomesRuas), G->num_vertices, &(*countRuas), antecessor1, G);
+        printf("CASO D \n");
+        enfileirarRuasInvertidas(vdest0, nomesRuas, &countRuas, antecessor1, G);
     } else {
-        enfileirarRuas(vorig1, vdest1, &(**nomesRuas), G->num_vertices, &(*countRuas), antecessor1, G);
+        printf("CASO E \n");
+        enfileirarRuasInvertidas(vdest1, nomesRuas, &countRuas, antecessor1, G);
     }
     
+   /* if (strcmp((nomesRuas[countRuas]->nomerua), (arestaO->nomerua)) != 0){
+        countRuas = countRuas + 1;
+        nomesRuas[countRuas] = aorig;
+    }*/
+    
+    /*
     fprintf(fp,"%s %ld %s %ld %ld %d\n", ruaorig, nrorig, ruadest, nrdest, mindist, *countRuas);
     
     int i;
