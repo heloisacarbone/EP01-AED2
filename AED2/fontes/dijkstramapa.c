@@ -40,11 +40,10 @@ void InicializaFonteUnica(int num_vertices, tvertice v0,
     for(i = 0; i < num_vertices; i++) {
         if (i == v0) { 
             customin[i] = 0;
-            visitados[i] = 1;
         } else { 
             customin[i] = DBL_MAX;
-            visitados[i] = 0;
         }
+        visitados[i] = 0;
         antecessor[i] = -1;
     }
 }
@@ -74,8 +73,8 @@ int TemMaisVisitas(int num_vertices, int *visitados) {
        int visitados - array que ajuda a validar quais vertices ja foram visitados.
        tpeso customin - array contendo o peso de cada um dos vertices.
 */ 
-tvertice ExtraiMinimo(int num_vertices, int *visitados, tpeso *customin) {
-    tvertice min = -1;
+int ExtraiMinimo(int num_vertices, int *visitados, tpeso *customin) {
+    int min = -1;
     tpeso aux_min = DBL_MAX;
     int i;
     for(i = 0; i < num_vertices; i++) {
@@ -86,7 +85,6 @@ tvertice ExtraiMinimo(int num_vertices, int *visitados, tpeso *customin) {
             }
         }
     }
-    
     return min;
 }
 
@@ -127,8 +125,9 @@ void Relaxamento(tvertice v0, tapontador adj,
 */
 void Dijkstra(tgrafo *G, tvertice v0,
               tpeso *customin, tvertice *antecessor) {
-    
-    tapontador aux_adj;              
+    printf("---------------Dijkstra--------------\n");
+    printf("VO: %d\n", v0);
+    tapontador aux_adj = NULL;              
     
     /* Array que ajuda a saber quais vertices ja foram visitados */
     int visitados[G->num_vertices];
@@ -136,32 +135,28 @@ void Dijkstra(tgrafo *G, tvertice v0,
     InicializaFonteUnica(G->num_vertices, v0, customin, antecessor, &(*visitados));
     
     while(TemMaisVisitas(G->num_vertices, visitados) == 1) {
-        tvertice menor = ExtraiMinimo(G->num_vertices, visitados, customin);
-        
+        int menor = ExtraiMinimo(G->num_vertices, visitados, customin);
+      
         if (menor != -1) {
-            
-            // Atualiza visitado
+            printf("Menor: %d\n", menor);
+       
             visitados[menor] = 1;
-            
+    
             // Verifica se o vertice tem adjacentes 
+           
             if (ListaAdjVazia(menor, G) != 1) {
-                
                 // Faz o relaxamento de todos os adjacentes
-                do {
-                    if (aux_adj == NULL) {
-                        aux_adj = PrimeiroAdj(menor, G);
-                    } else {
-                        aux_adj = ProxAdj(menor, aux_adj, G);
-                    }
+                aux_adj = PrimeiroAdj(menor, G);
+                while (aux_adj != NULL) {
+                    printf("Adj: %d\n",aux_adj->vertice);
                     Relaxamento(menor, aux_adj, &(*customin), &(*antecessor), G);
-                } while (FimListaAdj(menor, aux_adj, G) != 1);
+                    aux_adj = ProxAdj(menor, aux_adj, G);
+                } 
                 
                 aux_adj = NULL;
             }
         }
     }
-    
-    
 }
 
 /* Carrega o arquivo de requisicoes de rota, devolvendo o status
@@ -193,8 +188,6 @@ int CarregaRequisicoes(char *nomearq, int *qtreq,
                         char RuaOrigem[][MAXSTRING],
                         char RuaDestino[][MAXSTRING],
                         long *nrorigem, long *nrdestino) {
-                            
-    printf("CARREGA REQ\n");
     
     FILE *fp;
     int i;
@@ -214,9 +207,7 @@ int CarregaRequisicoes(char *nomearq, int *qtreq,
           return(0);
         }
 
-        printf("%s\n", auxOrigem);
         strcpy(RuaOrigem[i], auxOrigem);
-        printf("%s\n", RuaOrigem[i]); 
         strcpy(RuaDestino[i], auxDestino); 
     }
 
@@ -329,16 +320,27 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
     tvertice antecessor0[G->num_vertices], antecessor1[G->num_vertices];
     tvertice vorig0, vorig1, vdest0, vdest1;
     tapontador aorig, adest;
+
+    printf("------------------Imprime Melhor Rota------------------------\n");
+    printf("Origem: %s, %ld\n", ruaorig, nrorig);
+    printf("Destino: %s, %ld\n", ruadest, nrdest);
     
     BuscaArestaRua(&(*ruaorig), nrorig, &vorig0, &aorig, &(*G));
     vorig1 = aorig->vertice;
+    printf("Vértice O0: %d, Vértice O1: %d\n", vorig0, vorig1);
     BuscaArestaRua(&(*ruadest), nrdest, &vdest0, &adest, &(*G));
     vdest1 = adest->vertice;
+    printf("Vértice D0: %d, Vértice D1: %d\n", vdest0, vdest1);
     
-    long mindist;
+    printf("Arestas O: %p, Vértice D: %p\n", aorig, adest);
+    printf("--------------------------------\n");
+    
+    
+    tpeso mindist = DBL_MAX;
     char *caso;
     
     if (aorig == adest) {
+        printf("Caso A\n");
         caso = "A";
         mindist = Distancia(nrorig, nrdest);
     } else {
@@ -346,27 +348,59 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
         Dijkstra(G, vorig0, &(*customin0), &(*antecessor0));
         Dijkstra(G, vorig1, &(*customin1), &(*antecessor1));
         
-        long B = customin0[vdest0] + Distancia(nrorig,aorig->nrini) + Distancia(nrdest,adest->nrini);
-        long C = customin0[vdest1] + Distancia(nrorig,aorig->nrini) + Distancia(nrdest,adest->nrfim);
-        long D = customin1[vdest0] + Distancia(nrorig,aorig->nrfim) + Distancia(nrdest,adest->nrini);
-        long E = customin1[vdest1] + Distancia(nrorig,aorig->nrfim) + Distancia(nrdest,adest->nrfim);
+        printf("------------------------>Sai Dijkstra\n");
+        int k;
+        printf("customin0: ");
+        for (k =0; k < G->num_vertices; k++) {
+            printf("%f ", customin0[k]);
+        }
+        printf("\n");
+        printf("antecessor0: ");
+        for (k =0; k < G->num_vertices; k++) {
+            printf("%d ", antecessor0[k]);
+        }
+        printf("\n");
+        printf("customin1: ");
+        for (k =0; k < G->num_vertices; k++) {
+            printf("%f ", customin1[k]);
+        }
+        printf("\n");
+        printf("antecessor1: ");
+        for (k =0; k < G->num_vertices; k++) {
+            printf("%d ", antecessor1[k]);
+        }
+        
+        tpeso B = customin0[vdest0] + (double)Distancia(nrorig,aorig->nrini) + (double)Distancia(nrdest,adest->nrini);
+        tpeso C = customin0[vdest1] + (double)Distancia(nrorig,aorig->nrini) + (double)Distancia(nrdest,adest->nrfim);
+        tpeso D = customin1[vdest0] + (double)Distancia(nrorig,aorig->nrfim) + (double)Distancia(nrdest,adest->nrini);
+        tpeso E = customin1[vdest1] + (double)Distancia(nrorig,aorig->nrfim) + (double)Distancia(nrdest,adest->nrfim);
+        
+        printf("\nB: %f, C: %f, D: %f, E: %f\n", B, C, D, E);
         
         if (mindist > B) {
             caso = "B";
             mindist = B;
-        } else if (mindist > C) {
+        } 
+        if (mindist > C) {
             caso = "C";
             mindist = C;
-        } else if (mindist > D) {
+        } 
+        if (mindist > D) {
             caso = "D";
             mindist = D;
-        } else if (mindist > E) {
+        } 
+        if (mindist > E) {
             caso = "E";
             mindist = E;
         }
+        
     }
     
-    char *nomesRuas[G->num_vertices - 1];
+    printf("Escolhas: Caso - %s, MinDist: %f", caso, mindist);
+    
+   /*Segmentation Fault nessa parte. mais especificamente no enfileirarRuas. REVER
+    * 
+    *  char *nomesRuas[G->num_vertices - 1];
     int *countRuas = 0;
     
     if (caso == "A") {
@@ -388,7 +422,7 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
     
     for (i = 0; i < *countRuas; i++) {
         fprintf(fp, "%s\n", nomesRuas[i]);
-    }
+    } */
 }
 
 /*
