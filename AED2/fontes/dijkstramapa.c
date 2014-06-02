@@ -251,9 +251,10 @@ void enfileirarRuasInvertidas(tvertice vdest, tapontador *nomesRuas, int *countR
     tapontador aresta;
     while (auxPred != -1){
         aresta = BuscaAresta(auxPred, auxAtual, G);
-        if (strcmp((nomesRuas[(*countRuas) - 1]->nomerua), (aresta->nomerua)) != 0){
+        if (strcmp((nomesRuas[(*countRuas)]->nomerua), (aresta->nomerua)) != 0){
             *countRuas = (*countRuas) + 1;
             nomesRuas[*countRuas] = aresta;
+            printf("nomeRua: %s\n", nomesRuas[*countRuas]->nomerua);
         }
         auxAtual = auxPred;
         auxPred = antecessor[auxAtual]; 
