@@ -40,5 +40,8 @@ public class Vertice {
 	public void setadj(Vertice x){
 		this.adjacentes.add(x);
 	}
+	public Vertice getadj(int x){
+		return adjacentes.get(x);
+	}
 
 }
