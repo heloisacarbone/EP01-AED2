@@ -28,7 +28,7 @@ public class dijkstraAlgorithm  extends Comparable<T>{
 			for(Vertice n: atual.getadj()){		// Relaxamento dos vertices
 				relax(atual, n);
 				for(int p = 0; x.getgrafo().size() - 1; p++){	// não sei se precisa mas estou jogando os valores da dist atualizados no grafo original
-					if(n.getY().equals(x.getgrafo().get(p).getY()){
+					if(n.getZ().equals(x.getgrafo().get(p).getZ()){
 						x.getgrafo().get(p).setdist(n.getdist());	
 					}
 				}
@@ -44,7 +44,7 @@ public class dijkstraAlgorithm  extends Comparable<T>{
 					}
 				}
 				for(int p = 0; p < verticesremanescentes.size() -1; p++){	// verifica se o adjacente escolhido ja não foi visitado
-					if(temp.getY().equals(verticesremanescentes.get(p).getY()){
+					if(temp.getZ().equals(verticesremanescentes.get(p).getZ()){
 						adj.remove(temp);
 						if(adj.isEmpty()){
 							temp = verticesremanescentes.get(0);	// Caso algum Vertice fique perdido entre vertices que ja foram visitados
@@ -63,17 +63,17 @@ public class dijkstraAlgorithm  extends Comparable<T>{
 	public Map <String, String> mapa(grafo x){			// Retorna o mapa contendo o caminho a ser feito
 		List <Vertice> minimap = new arrayList<Vertice>();
 		minimap = x.getgrafo();
-		String first = inicio.getY();
+		String first = inicio.getZ();
 		String second;
-		while(!second.equals(fim.getY())){
+		while(!second.equals(fim.getZ())){
 			for( int p = 0; minimap.size() -1; p++){
-				if(first.equals(minimap.get(p).getY())){
+				if(first.equals(minimap.get(p).getZ())){
 					List <Vertice> adj2 = minimap.get(p).getadjlist();
 					double menor = 0;
 					for(int p2 = 0; p2 < adj2.size(); p2++){
 						if(menor < adj2.get(p2).getdist()){
 							menor = adj2.get(p2).getdist();
-							second = adj2.get(p2).getY();
+							second = adj2.get(p2).getZ();
 						}
 					}
 				}
