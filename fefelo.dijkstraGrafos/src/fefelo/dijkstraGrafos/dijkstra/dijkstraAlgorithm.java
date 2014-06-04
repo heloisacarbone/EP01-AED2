@@ -9,25 +9,25 @@ public class dijkstraAlgorithm  extends Comparable<T>{
 	private Map <String, String> caminho = new hashMap<String, String>();
 	private Vertice atual;
 
-	public void inicio(Vertice x){
+	public void inicio(Vertice x){	// Começo do caminho
 		this.inicio = x;
 	}
-	public void fim(Vertice x){
+	public void fim(Vertice x){	// Fim do caminho
 		this.fim = x;
 	}
 	
 	public void dijkstraAlgorithm(grafo x){
-		verticesremanescentes = x.getgrafo();
-		for(Vertice y: x.getgrafo()){
+		verticesremanescentes = x.getgrafo();		// Criando uma list para passar por todos os Vertices
+		for(Vertice y: x.getgrafo()){			// Colocando todas as distancias em infinito
 			x.setdist(Double.POSITIVE_INFINITY);
 		}
 		inicio.setdist(0);
 		atual = inicio;
 		
-		while(!verticesremanescentes.isEmpty()){
-			for(Vertice n: atual.getadj()){
+		while(!verticesremanescentes.isEmpty()){	// So termina qnd visitar todos os vertices
+			for(Vertice n: atual.getadj()){		// Relaxamento dos vertices
 				relax(atual, n);
-				for(int p = 0; x.getgrafo().size() - 1; p++){
+				for(int p = 0; x.getgrafo().size() - 1; p++){	// não sei se precisa mas estou jogando os valores da dist atualizados no grafo original
 					if(n.getY().equals(x.getgrafo().get(p).getY()){
 						x.getgrafo().get(p).setdist(n.getdist());	
 					}
@@ -36,16 +36,19 @@ public class dijkstraAlgorithm  extends Comparable<T>{
 			adj = atual.getadjlist();
 			double menordist = 0;
 			Vertice temp;
-			while(adj != null){
-				for(int p = 0; p < adj.size() - 1; p++){
+			while(!adj.isEmpty()){	// Escolher o proximo caminho pegando o menor caminho
+				for(int p = 0; p < adj.size() - 1; p++){	// Escolhe o menor caminho dentre os adjacentes
 					if(menordist<adj.get(p).getdist()){
 						menordist = adj.get(p).getdist();
 						temp = adj.get(p);
 					}
 				}
-				for(int p = 0; p < verticesremanescentes.size() -1; p++){
+				for(int p = 0; p < verticesremanescentes.size() -1; p++){	// verifica se o adjacente escolhido ja não foi visitado
 					if(temp.getY().equals(verticesremanescentes.get(p).getY()){
 						adj.remove(temp);
+						if(adj.isEmpty()){
+							temp = verticesremanescentes.get(0);	// Caso algum Vertice fique perdido entre vertices que ja foram visitados
+						}
 					}else{
 						adj.clear();
 					}
@@ -57,7 +60,7 @@ public class dijkstraAlgorithm  extends Comparable<T>{
 		}
 	}
 	
-	public Map <String, String> mapa(grafo x){
+	public Map <String, String> mapa(grafo x){			// Retorna o mapa contendo o caminho a ser feito
 		List <Vertice> minimap = new arrayList<Vertice>();
 		minimap = x.getgrafo();
 		String first = inicio.getY();
@@ -80,7 +83,7 @@ public class dijkstraAlgorithm  extends Comparable<T>{
 		}
 		return caminho;
 	}
-	public double maxdistance(grafo x){
+	public double maxdistance(grafo x){			// Retorna a distância final do percurso
 		for(int p = 0 < x.getgrafo.size() -1 ; p++){
 			if(fim.getY().equals(x.getgrafo().get(p).getY()){
 				return x.getgrafo().get(p).getdist();
@@ -90,7 +93,7 @@ public class dijkstraAlgorithm  extends Comparable<T>{
 	}
 	
 	
-	private void relax(Vertice x, Vertice y){
+	private void relax(Vertice x, Vertice y){		// Calcula se existe um caminho menor para o vertice adjacente atual
 		double z = x.getdist() + Aresta(x,y).getpeso();
 		if(y.getdist() > z){
 			y.setdist(z);
