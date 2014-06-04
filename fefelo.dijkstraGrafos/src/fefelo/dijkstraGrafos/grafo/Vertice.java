@@ -44,6 +44,9 @@ public class Vertice {
 	public Vertice getadj(int x){
 		return adjacentes.get(x);
 	}
+	public int sizeadj(){
+		return this.adjacentes.size();
+	}
 	public double getdist(){
 		return dist;
 	}
