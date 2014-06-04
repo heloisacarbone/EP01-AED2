@@ -8,7 +8,7 @@ public class Vertice {
 	private int y;
 	private String z; // facilitar dando um nome pra cada vertice
 	private List <Vertice> adjacentes = new arrayList<Vertice>;
-	private int dist;
+	private double dist;
 	
 	public Vertice(String z, int x, int y) {
 		this.setX(x);
@@ -44,10 +44,10 @@ public class Vertice {
 	public Vertice getadj(int x){
 		return adjacentes.get(x);
 	}
-	public int getdist(){
+	public double getdist(){
 		return dist;
 	}
-	public void setdist(int x){
+	public void setdist(double x){
 		this.dist = x;
 	}
 
