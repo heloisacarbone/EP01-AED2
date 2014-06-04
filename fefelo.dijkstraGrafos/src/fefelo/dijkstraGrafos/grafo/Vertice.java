@@ -7,6 +7,7 @@ public class Vertice {
 	private int x;
 	private int y;
 	private String z; // facilitar dando um nome pra cada vertice
+	private List <Vertice> adjacentes = new arrayList<Vertice>;
 	
 	public Vertice(String z, int x, int y) {
 		this.setX(x);
@@ -35,6 +36,9 @@ public class Vertice {
 	public void setY(int y) {
 		this.y = y;
 	}
-
+		
+	public void setadj(Vertice x){
+		this.adjacentes.add(x);
+	}
 
 }
