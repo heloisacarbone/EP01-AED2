@@ -125,8 +125,7 @@ void Relaxamento(tvertice v0, tapontador adj,
 */
 void Dijkstra(tgrafo *G, tvertice v0,
               tpeso *customin, tvertice *antecessor) {
-    printf("---------------Dijkstra--------------\n");
-    printf("VO: %d\n", v0);
+
     tapontador aux_adj = NULL;              
     
     /* Array que ajuda a saber quais vertices ja foram visitados */
@@ -235,18 +234,21 @@ int checaRuaEnfileirada(char *ruas, int num_ruas, char rua) {
 }
 
 /*
-  Enfileira as ruas que fazem o caminho com custo minimo.
+  Empilha as ruas que fazem o caminho com custo minimo.
   Recebe como parametros: 
        tvertice vdest - Vertice de destino.
+       tapontador adest - Aresta de destino.
        char *nomesRuas - Array com a fila de ruas.
        int *countRuas - Numero de ruas na fila de ruas.
        tvertice *antecessor - Array de antecessores dos vertices.
        tgrafo *G - Grafo.
 */
-void enfileirarRuasInvertidas(tvertice vdest, tapontador *nomesRuas, int *countRuas, tvertice *antecessor, tgrafo *G) {
+void empilhaRuas(tvertice vdest, tapontador adest, tapontador *nomesRuas, int *countRuas, tvertice *antecessor, tgrafo *G) {
     printf("-----------enfileirando----------\n");
     tvertice auxAtual = vdest;
     tvertice auxPred = antecessor[vdest];
+    *countRuas = (*countRuas) + 1;
+    nomesRuas[*countRuas] = adest;
     printf("AuxAtual: %d, AuxPred: %d\n", auxAtual, auxPred);
     tapontador aresta;
     while (auxPred != -1){
@@ -254,7 +256,7 @@ void enfileirarRuasInvertidas(tvertice vdest, tapontador *nomesRuas, int *countR
         if (strcmp((nomesRuas[(*countRuas)]->nomerua), (aresta->nomerua)) != 0){
             *countRuas = (*countRuas) + 1;
             nomesRuas[*countRuas] = aresta;
-            printf("nomeRua: %s\n", nomesRuas[*countRuas]->nomerua);
+            
         }
         auxAtual = auxPred;
         auxPred = antecessor[auxAtual]; 
@@ -264,14 +266,43 @@ void enfileirarRuasInvertidas(tvertice vdest, tapontador *nomesRuas, int *countR
 /*
     Distancia entre o num de inicio e o num de destino em uma rua.
     Recebe como parametros:
-        long nrorig - numero de origem
-        long nrdest - numero de destino
+        tapontador aresta - aresta que possui os numeros
+        long numero - numero de origem ou fim
+        int posicao - 0 -> origem, 1 -> fim
  */ 
-long Distancia(long nrorig, long nrdest) {
-    if (nrorig > nrdest) 
-        return nrorig - nrdest;
-    else
-        return nrdest - nrorig;
+double Distancia (tapontador aresta, long numero1, long numero2){ 
+	double distancia;
+	double tamanhoRua;
+    if (numero1 != NULL && numero2 != NULL) {
+        if (aresta->nrini > aresta->nrfim){
+            tamanhoRua = aresta->nrini - aresta->nrfim;
+        }else{ 
+            tamanhoRua = aresta->nrfim - aresta->nrini;
+        }
+        if(numero1 > numero2){
+            distancia = numero1 - numero2;
+        }else{
+            distancia = numero2 - numero1;
+        }
+    } else if (numero1 != NULL) { 
+        if (aresta->nrini > numero1) {
+            distancia = aresta->nrini - numero1;
+            tamanhoRua = aresta->nrini - aresta->nrfim;
+        } else { 
+            distancia = numero1 - aresta->nrini;
+            tamanhoRua = aresta->nrfim - aresta->nrini;
+        }
+    } else {
+        if (aresta->nrfim > numero2) {
+            distancia = aresta->nrfim - numero2;
+            tamanhoRua = aresta->nrfim - aresta->nrini;
+        } else {
+            distancia = numero2 - aresta->nrfim;
+            tamanhoRua = aresta->nrini - aresta->nrfim;
+        }
+    }
+    
+	return (distancia * aresta->peso) / tamanhoRua;
 }
 
 /* Dado um endereco de origem e um endereco de destino no grafo G,
@@ -312,14 +343,9 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
     
     BuscaArestaRua(&(*ruaorig), nrorig, &vorig0, &aorig, &(*G));
     vorig1 = aorig->vertice;
-    printf("Vértice O0: %d, Vértice O1: %d\n", vorig0, vorig1);
+
     BuscaArestaRua(&(*ruadest), nrdest, &vdest0, &adest, &(*G));
     vdest1 = adest->vertice;
-    printf("Vértice D0: %d, Vértice D1: %d\n", vdest0, vdest1);
-    
-    printf("Arestas O: %p, Vértice D: %p\n", aorig, adest);
-    printf("--------------------------------\n");
-    
     
     tpeso mindist = DBL_MAX;
     char *caso;
@@ -327,40 +353,17 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
     if (aorig == adest) {
         printf("Caso A\n");
         caso = "A";
-        mindist = Distancia(nrorig, nrdest);
+        mindist = Distancia(aorig, nrorig, nrdest);
     } else {
         
         Dijkstra(G, vorig0, &(*customin0), &(*antecessor0));
         Dijkstra(G, vorig1, &(*customin1), &(*antecessor1));
         
-        printf("------------------------>Sai Dijkstra\n");
-        int k;
-        printf("customin0: ");
-        for (k =0; k < G->num_vertices; k++) {
-            printf("%f ", customin0[k]);
-        }
-        printf("\n");
-        printf("antecessor0: ");
-        for (k =0; k < G->num_vertices; k++) {
-            printf("%d ", antecessor0[k]);
-        }
-        printf("\n");
-        printf("customin1: ");
-        for (k =0; k < G->num_vertices; k++) {
-            printf("%f ", customin1[k]);
-        }
-        printf("\n");
-        printf("antecessor1: ");
-        for (k =0; k < G->num_vertices; k++) {
-            printf("%d ", antecessor1[k]);
-        }
+        tpeso B = customin0[vdest0] + Distancia(aorig, nrorig, NULL) + Distancia(adest, NULL, nrdest);
+        tpeso C = customin0[vdest1] + Distancia(aorig, nrorig, NULL) + Distancia(adest, NULL, nrdest);
+        tpeso D = customin1[vdest0] + Distancia(aorig, nrorig, NULL) + Distancia(adest, NULL, nrdest);
+        tpeso E = customin1[vdest1] + Distancia(aorig, nrorig, NULL) + Distancia(adest, NULL, nrdest);
         
-        tpeso B = customin0[vdest0] + (double)Distancia(nrorig,aorig->nrini) + (double)Distancia(nrdest,adest->nrini);
-        tpeso C = customin0[vdest1] + (double)Distancia(nrorig,aorig->nrini) + (double)Distancia(nrdest,adest->nrfim);
-        tpeso D = customin1[vdest0] + (double)Distancia(nrorig,aorig->nrfim) + (double)Distancia(nrdest,adest->nrini);
-        tpeso E = customin1[vdest1] + (double)Distancia(nrorig,aorig->nrfim) + (double)Distancia(nrdest,adest->nrfim);
-        
-        printf("\nB: %f, C: %f, D: %f, E: %f\n", B, C, D, E);
         
         if (mindist > B) {
             caso = "B";
@@ -392,31 +395,32 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
         countRuas = countRuas + 1;
     } else if (caso == "B") {        
         printf("CASO B \n");
-        enfileirarRuasInvertidas(vdest0, nomesRuas, &countRuas, antecessor0, G);
+        empilhaRuas(vdest0, adest, &(*nomesRuas), &countRuas, antecessor0, G);
     } else if (caso == "C") {
         printf("CASO C \n");
-        enfileirarRuasInvertidas(vdest1, nomesRuas, &countRuas, antecessor0, G);
+        empilhaRuas(vdest1, adest, &(*nomesRuas), &countRuas, antecessor0, G);
     } else if (caso == "D") {
         printf("CASO D \n");
-        enfileirarRuasInvertidas(vdest0, nomesRuas, &countRuas, antecessor1, G);
+        empilhaRuas(vdest0, adest, &(*nomesRuas), &countRuas, antecessor1, G);
     } else {
         printf("CASO E \n");
-        enfileirarRuasInvertidas(vdest1, nomesRuas, &countRuas, antecessor1, G);
+        empilhaRuas(vdest1, adest, &(*nomesRuas), &countRuas, antecessor1, G);
     }
     
-   /* if (strcmp((nomesRuas[countRuas]->nomerua), (arestaO->nomerua)) != 0){
+    if (strcmp((nomesRuas[countRuas]->nomerua), (aorig->nomerua)) != 0){
         countRuas = countRuas + 1;
         nomesRuas[countRuas] = aorig;
-    }*/
+    }
     
-    /*
-    fprintf(fp,"%s %ld %s %ld %ld %d\n", ruaorig, nrorig, ruadest, nrdest, mindist, *countRuas);
+    printf("Count Ruas: %d\n", countRuas);
+    
+    //fprintf(fp,"%s %ld %s %ld %ld %d\n", ruaorig, nrorig, ruadest, nrdest, mindist, countRuas);
     
     int i;
     
-    for (i = 0; i < *countRuas; i++) {
-        fprintf(fp, "%s\n", nomesRuas[i]);
-    } */
+    for (i = countRuas; i > 0; i--) {
+        printf("%s\n", nomesRuas[i]->nomerua);
+    } 
 }
 
 /*
