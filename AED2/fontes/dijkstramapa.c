@@ -244,12 +244,10 @@ int checaRuaEnfileirada(char *ruas, int num_ruas, char rua) {
        tgrafo *G - Grafo.
 */
 void empilhaRuas(tvertice vdest, tapontador adest, tapontador *nomesRuas, int *countRuas, tvertice *antecessor, tgrafo *G) {
-    printf("-----------enfileirando----------\n");
     tvertice auxAtual = vdest;
     tvertice auxPred = antecessor[vdest];
     *countRuas = (*countRuas) + 1;
     nomesRuas[*countRuas] = adest;
-    printf("AuxAtual: %d, AuxPred: %d\n", auxAtual, auxPred);
     tapontador aresta;
     while (auxPred != -1){
         aresta = BuscaAresta(auxPred, auxAtual, G);
@@ -336,10 +334,6 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
     tvertice antecessor0[G->num_vertices], antecessor1[G->num_vertices];
     tvertice vorig0, vorig1, vdest0, vdest1;
     tapontador aorig, adest;
-
-    printf("------------------Imprime Melhor Rota------------------------\n");
-    printf("Origem: %s, %ld\n", ruaorig, nrorig);
-    printf("Destino: %s, %ld\n", ruadest, nrdest);
     
     BuscaArestaRua(&(*ruaorig), nrorig, &vorig0, &aorig, &(*G));
     vorig1 = aorig->vertice;
@@ -351,7 +345,6 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
     char *caso;
     
     if (aorig == adest) {
-        printf("Caso A\n");
         caso = "A";
         mindist = Distancia(aorig, nrorig, nrdest);
     } else {
@@ -384,26 +377,19 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
         
     }
     
-    printf("Escolhas: Caso - %s, MinDist: %f\n", caso, mindist);
-    
     tapontador nomesRuas[G->num_vertices];
     int countRuas = 0;
     
     if (caso == "A") {
-        printf("CASO A \n");
         nomesRuas[0] = aorig;
         countRuas = countRuas + 1;
-    } else if (caso == "B") {        
-        printf("CASO B \n");
+    } else if (caso == "B") {  
         empilhaRuas(vdest0, adest, &(*nomesRuas), &countRuas, antecessor0, G);
     } else if (caso == "C") {
-        printf("CASO C \n");
         empilhaRuas(vdest1, adest, &(*nomesRuas), &countRuas, antecessor0, G);
     } else if (caso == "D") {
-        printf("CASO D \n");
         empilhaRuas(vdest0, adest, &(*nomesRuas), &countRuas, antecessor1, G);
     } else {
-        printf("CASO E \n");
         empilhaRuas(vdest1, adest, &(*nomesRuas), &countRuas, antecessor1, G);
     }
     
@@ -412,15 +398,15 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
         nomesRuas[countRuas] = aorig;
     }
     
-    printf("Count Ruas: %d\n", countRuas);
-    
-    //fprintf(fp,"%s %ld %s %ld %ld %d\n", ruaorig, nrorig, ruadest, nrdest, mindist, countRuas);
+    fprintf(fp, "%s %ld %s %ld %f %d\n", ruaorig, nrorig, ruadest, nrdest, mindist, countRuas);
     
     int i;
     
     for (i = countRuas; i > 0; i--) {
-        printf("%s\n", nomesRuas[i]->nomerua);
+        fprintf(fp, "%s\n", nomesRuas[i]->nomerua);
     } 
+    
+    fprintf(fp, "\n");
 }
 
 /*
