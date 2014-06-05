@@ -83,7 +83,7 @@ public class dijkstraAlgorithm  extends Comparable<T>{
 		}
 		return caminho;
 	}
-	public double maxdistance(grafo x){			// Retorna a distância final do percurso
+	public double maxdistancegrafo(grafo x){			// Retorna a distância final do percurso
 		for(int p = 0 < x.getgrafo.size() -1 ; p++){
 			if(fim.getY().equals(x.getgrafo().get(p).getY()){
 				return x.getgrafo().get(p).getdist();
