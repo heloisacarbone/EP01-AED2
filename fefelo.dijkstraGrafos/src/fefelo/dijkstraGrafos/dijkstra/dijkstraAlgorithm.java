@@ -6,7 +6,7 @@ public class dijkstraAlgorithm  extends Comparable<T>{
 	private Vertice fim;
 	private List <Vertice> verticesremanescentes;
 	private List <Vertice> adj;
-	private Map <String, String> caminho = new hashMap<String, String>();
+	private Map<String, String> caminho = new hashMap<String, String>();
 	private Vertice atual;
 
 	public void inicio(Vertice x){	// Começo do caminho
@@ -60,8 +60,8 @@ public class dijkstraAlgorithm  extends Comparable<T>{
 		}
 	}
 	
-	public Map <String, String> mapa(grafo x){			// Retorna o mapa contendo o caminho a ser feito
-		List <Vertice> minimap = new arrayList<Vertice>();
+	public Map<String, String> mapa(grafo x){			// Retorna o mapa contendo o caminho a ser feito
+		List<Vertice> minimap = new arrayList<Vertice>();
 		minimap = x.getgrafo();
 		String first = inicio.getZ();
 		String second;
