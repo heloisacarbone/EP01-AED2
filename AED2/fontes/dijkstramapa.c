@@ -125,7 +125,6 @@ void Relaxamento(tvertice v0, tapontador adj,
 */
 void Dijkstra(tgrafo *G, tvertice v0,
               tpeso *customin, tvertice *antecessor) {
-
     tapontador aux_adj = NULL;              
     
     /* Array que ajuda a saber quais vertices ja foram visitados */
@@ -237,24 +236,21 @@ int checaRuaEnfileirada(char *ruas, int num_ruas, char rua) {
   Empilha as ruas que fazem o caminho com custo minimo.
   Recebe como parametros: 
        tvertice vdest - Vertice de destino.
-       tapontador adest - Aresta de destino.
        char *nomesRuas - Array com a fila de ruas.
        int *countRuas - Numero de ruas na fila de ruas.
        tvertice *antecessor - Array de antecessores dos vertices.
        tgrafo *G - Grafo.
 */
-void empilhaRuas(tvertice vdest, tapontador adest, tapontador *nomesRuas, int *countRuas, tvertice *antecessor, tgrafo *G) {
+void empilhaRuas(tvertice vdest, tapontador *nomesRuas, int *countRuas, tvertice *antecessor, tgrafo *G) {
     tvertice auxAtual = vdest;
     tvertice auxPred = antecessor[vdest];
-    *countRuas = (*countRuas) + 1;
-    nomesRuas[*countRuas] = adest;
     tapontador aresta;
+    
     while (auxPred != -1){
         aresta = BuscaAresta(auxPred, auxAtual, G);
         if (strcmp((nomesRuas[(*countRuas)]->nomerua), (aresta->nomerua)) != 0){
             *countRuas = (*countRuas) + 1;
             nomesRuas[*countRuas] = aresta;
-            
         }
         auxAtual = auxPred;
         auxPred = antecessor[auxAtual]; 
@@ -268,7 +264,7 @@ void empilhaRuas(tvertice vdest, tapontador adest, tapontador *nomesRuas, int *c
         long numero - numero de origem ou fim
         int posicao - 0 -> origem, 1 -> fim
  */ 
-double Distancia (tapontador aresta, long numero1, long numero2){ 
+double Distancia (tapontador aresta, long* numero1, long* numero2){ 
 	double distancia;
 	double tamanhoRua;
     if (numero1 != NULL && numero2 != NULL) {
@@ -277,25 +273,25 @@ double Distancia (tapontador aresta, long numero1, long numero2){
         }else{ 
             tamanhoRua = aresta->nrfim - aresta->nrini;
         }
-        if(numero1 > numero2){
-            distancia = numero1 - numero2;
+        if(*numero1 > *numero2){
+            distancia = *numero1 - *numero2;
         }else{
-            distancia = numero2 - numero1;
+            distancia = *numero2 - *numero1;
         }
     } else if (numero1 != NULL) { 
-        if (aresta->nrini > numero1) {
-            distancia = aresta->nrini - numero1;
+        if (aresta->nrini > *numero1) {
+            distancia = aresta->nrini - *numero1;
             tamanhoRua = aresta->nrini - aresta->nrfim;
         } else { 
-            distancia = numero1 - aresta->nrini;
+            distancia = *numero1 - aresta->nrini;
             tamanhoRua = aresta->nrfim - aresta->nrini;
         }
     } else {
-        if (aresta->nrfim > numero2) {
-            distancia = aresta->nrfim - numero2;
+        if (aresta->nrfim > *numero2) {
+            distancia = aresta->nrfim - *numero2;
             tamanhoRua = aresta->nrfim - aresta->nrini;
         } else {
-            distancia = numero2 - aresta->nrfim;
+            distancia = *numero2 - aresta->nrfim;
             tamanhoRua = aresta->nrini - aresta->nrfim;
         }
     }
@@ -337,26 +333,24 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
     
     BuscaArestaRua(&(*ruaorig), nrorig, &vorig0, &aorig, &(*G));
     vorig1 = aorig->vertice;
-
     BuscaArestaRua(&(*ruadest), nrdest, &vdest0, &adest, &(*G));
-    vdest1 = adest->vertice;
+    vdest1 = adest->vertice;    
     
     tpeso mindist = DBL_MAX;
     char *caso;
     
     if (aorig == adest) {
         caso = "A";
-        mindist = Distancia(aorig, nrorig, nrdest);
+        mindist = Distancia(aorig, &nrorig, &nrdest);
     } else {
         
         Dijkstra(G, vorig0, &(*customin0), &(*antecessor0));
         Dijkstra(G, vorig1, &(*customin1), &(*antecessor1));
         
-        tpeso B = customin0[vdest0] + Distancia(aorig, nrorig, NULL) + Distancia(adest, NULL, nrdest);
-        tpeso C = customin0[vdest1] + Distancia(aorig, nrorig, NULL) + Distancia(adest, NULL, nrdest);
-        tpeso D = customin1[vdest0] + Distancia(aorig, nrorig, NULL) + Distancia(adest, NULL, nrdest);
-        tpeso E = customin1[vdest1] + Distancia(aorig, nrorig, NULL) + Distancia(adest, NULL, nrdest);
-        
+        tpeso B = customin0[vdest0] + Distancia(aorig, &nrorig, NULL) + Distancia(adest, &nrdest, NULL);
+        tpeso C = customin0[vdest1] + Distancia(aorig, &nrorig, NULL) + Distancia(adest, NULL, &nrdest);
+        tpeso D = customin1[vdest0] + Distancia(aorig, NULL, &nrorig) + Distancia(adest, &nrdest, NULL);
+        tpeso E = customin1[vdest1] + Distancia(aorig, NULL, &nrorig) + Distancia(adest, NULL, &nrdest);
         
         if (mindist > B) {
             caso = "B";
@@ -379,18 +373,18 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
     
     tapontador nomesRuas[G->num_vertices];
     int countRuas = 0;
-    
-    if (caso == "A") {
-        nomesRuas[0] = aorig;
-        countRuas = countRuas + 1;
-    } else if (caso == "B") {  
-        empilhaRuas(vdest0, adest, &(*nomesRuas), &countRuas, antecessor0, G);
+	
+    nomesRuas[1] = adest;
+    countRuas = countRuas + 1;
+	
+    if (caso == "B") {     
+        empilhaRuas(vdest0, nomesRuas, &countRuas, antecessor0, G);
     } else if (caso == "C") {
-        empilhaRuas(vdest1, adest, &(*nomesRuas), &countRuas, antecessor0, G);
+        empilhaRuas(vdest1, nomesRuas, &countRuas, antecessor0, G);
     } else if (caso == "D") {
-        empilhaRuas(vdest0, adest, &(*nomesRuas), &countRuas, antecessor1, G);
-    } else {
-        empilhaRuas(vdest1, adest, &(*nomesRuas), &countRuas, antecessor1, G);
+        empilhaRuas(vdest0, nomesRuas, &countRuas, antecessor1, G);
+    } else if (caso == "E"){
+        empilhaRuas(vdest1, nomesRuas, &countRuas, antecessor1, G);
     }
     
     if (strcmp((nomesRuas[countRuas]->nomerua), (aorig->nomerua)) != 0){
@@ -398,15 +392,16 @@ void ImprimeMelhorRota (FILE *fp, char *ruaorig, long nrorig,
         nomesRuas[countRuas] = aorig;
     }
     
-    fprintf(fp, "%s %ld %s %ld %f %d\n", ruaorig, nrorig, ruadest, nrdest, mindist, countRuas);
+    
+    fprintf(fp,"%s %ld %s %ld %lf %d\n", ruaorig, nrorig, ruadest, nrdest, mindist, countRuas);
+	
     
     int i;
     
     for (i = countRuas; i > 0; i--) {
         fprintf(fp, "%s\n", nomesRuas[i]->nomerua);
     } 
-    
-    fprintf(fp, "\n");
+	fprintf(fp, "\n");
 }
 
 /*
