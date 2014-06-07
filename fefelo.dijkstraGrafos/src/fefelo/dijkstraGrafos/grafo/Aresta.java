@@ -1,4 +1,11 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package fefelo.dijkstraGrafos.grafo;
+
+import java.lang.Math;
+
 import fefelo.dijkstraGrafos.grafo.Vertice;
 
 public class Aresta {
@@ -11,13 +18,13 @@ public class Aresta {
 		setV2(v2);
 		this.peso = calcpeso(v1, v2);
 	}
-	public double calcpeso(Vertice x, Vertice y){	// Calcula o peso da aresta baseado nas coordenadas de cada vertice
+	public double calcpeso(Vertice x, Vertice y){	// Calcula o peso da aresta baseado nas fefelo.dijkstraGrafosrdenadas de cada vertice
 		int n = (x.getX() - y.getX())^2;
 		int m = (x.getY() - y.getY())^2;
-		return math.sqrt(n+m);
+		return Math.sqrt(n+m);
 	}
 
-	public int getPeso() {				// Retorna o peso da aresta
+	public double getPeso() {				// Retorna o peso da aresta
 		return peso;
 	}
 

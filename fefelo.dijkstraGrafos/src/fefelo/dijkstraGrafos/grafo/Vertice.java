@@ -1,13 +1,19 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package fefelo.dijkstraGrafos.grafo;
 
-import java.io.ObjectInputStream.GetField;
 
-public class Vertice {
+import java.io.ObjectInputStream.GetField;
+import java.util.*;
+
+public final class Vertice {
 
 	private int x;
 	private int y;
 	private String z; // facilitar dando um nome pra cada vertice
-	private List <Vertice> adjacentes = new arrayList<Vertice>;	// lista de vertices adjacentes
+	private List<Vertice> adjacentes = new ArrayList<Vertice>();	// lista de vertices adjacentes
 	private double dist;
 	
 	public Vertice(String z, int x, int y) {	// inicializa um vertice
@@ -15,26 +21,30 @@ public class Vertice {
 		this.setY(y);
 		this.setZ(z);
 	}
+
+    Vertice() {
+     }
 	public String getZ(){				// retorna a descrição do vertice
 		return z;
 	}
 	public String setZ(String z){			// adiciona a descrição do vertice
 		this.z = z;
+            return null;
 	}
 
-	public int getX() {				// Retorna a coordenada X do vertice
+	public int getX() {				// Retorna a fefelo.dijkstraGrafosrdenada X do vertice
 		return x;
 	}
 
-	public void setX(int x) {			// Adiciona a coordenada X do vertice
+	public void setX(int x) {			// Adiciona a fefelo.dijkstraGrafosrdenada X do vertice
 		this.x = x;
 	}
 
-	public int getY() {				// Retorna a coordenada Y do vertice
+	public int getY() {				// Retorna a fefelo.dijkstraGrafosrdenada Y do vertice
 		return y;
 	}
 
-	public void setY(int y) {			// Adiciona a coordenada Y do vertice
+	public void setY(int y) {			// Adiciona a fefelo.dijkstraGrafosrdenada Y do vertice
 		this.y = y;
 	}
 		
