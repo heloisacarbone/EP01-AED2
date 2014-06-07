@@ -21,13 +21,12 @@ public final class Vertice {
 		this.setY(y);
 		this.setZ(z);
 	}
-
-    Vertice() {
-     }
-	public String getZ(){				// retorna a descrição do vertice
+	
+	public String getZ() {				// retorna a descrição do vertice
 		return z;
 	}
-	public String setZ(String z){			// adiciona a descrição do vertice
+	
+	public String setZ(String z) {			// adiciona a descrição do vertice
 		this.z = z;
             return null;
 	}
@@ -48,22 +47,27 @@ public final class Vertice {
 		this.y = y;
 	}
 		
-	public void setadj(Vertice x){			// Adiciona um vertice vizinho ao vertice atual
+	public void setadj(Vertice x) {			// Adiciona um vertice vizinho ao vertice atual
 		this.adjacentes.add(x);
 	}
-	public Vertice getadj(int x){			// Retorna um vertice vizinho
+	
+	public Vertice getadj(int x) {			// Retorna um vertice vizinho
 		return adjacentes.get(x);
 	}
-	public List<Vertice> getadjlist(){		// Retorna todos os vertices vizinhos
+	
+	public List<Vertice> getadjlist() {		// Retorna todos os vertices vizinhos
 		return adjacentes;
 	}
-	public int sizeadj(){				// Retorna a quantidade de vertices vizinhos
+	
+	public int sizeadj() {				// Retorna a quantidade de vertices vizinhos
 		return this.adjacentes.size();
 	}
-	public double getdist(){			// Retorna a distancia atual do vertice em relação ao inicio
+	
+	public double getdist() {			// Retorna a distancia atual do vertice em relação ao inicio
 		return dist;
 	}
-	public void setdist(double x){			// Adiciona uma distancia ao vertice atual em relação ao inicio
+	
+	public void setdist(double x) {			// Adiciona uma distancia ao vertice atual em relação ao inicio
 		this.dist = x;
 	}
 

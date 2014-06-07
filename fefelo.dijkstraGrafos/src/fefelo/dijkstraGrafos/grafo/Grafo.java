@@ -6,7 +6,6 @@ package fefelo.dijkstraGrafos.grafo;
 
 
 import fefelo.dijkstraGrafos.grafo.Vertice;
-import fefelo.dijkstraGrafos.grafo.Aresta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +20,14 @@ public class Grafo {
 	public void addvertice(Vertice x){			// Adiciona um Vertice ao Grafo
 		this.adjList.add(x);
 	}
-	public List getgrafo(){		// Retorna a lista com os vertices
+	public List<Vertice> getgrafo(){		// Retorna a lista com os vertices
 		return this.adjList;
+	}
+	
+	public double getPesoAresta(Vertice x, Vertice y) {	// Calcula o peso da aresta baseado nas fefelo.dijkstraGrafosrdenadas de cada vertice
+		int n = (x.getX() - y.getX())^2;
+		int m = (x.getY() - y.getY())^2;
+		return Math.sqrt(n+m);
 	}
 	
 
