@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import fefelo.dijkstraGrafos.grafo.Grafo;
 import fefelo.dijkstraGrafos.grafo.Vertice;
+
+
+
 
 
 public class dijkstraAlgorithm{
@@ -18,7 +20,7 @@ public class dijkstraAlgorithm{
 	private Vertice inicio;
 	private Vertice fim;
 	private List <Vertice> verticesremanescentes;
-    private List <Vertice> adj;
+       	private List <Vertice> adj;
 	private Map<String, String> caminho = new HashMap<String, String>();
 	private Vertice atual;
 
@@ -28,13 +30,13 @@ public class dijkstraAlgorithm{
 	public void fim(Vertice x){	// Fim do caminho
 		this.fim = x;
 	}
-	
+        
 	/**
 	 * Inicializa a execução do algoritmo do dijkstra sobre um grafo
 	 * 
 	 * @param grafo
 	 */
-	public void dijkstraAlgorithm(Grafo grafo) {
+	public void dijkstraAlgorithm(Grafo grafo){
 		verticesremanescentes = grafo.getgrafo();		// Criando uma list para passar por todos os Vertices
 		
 		for(Vertice y: verticesremanescentes){			// Colocando todas as distancias em infinito
@@ -43,75 +45,52 @@ public class dijkstraAlgorithm{
 		
 		inicio.setdist(0);
 		atual = inicio;
-		
-		while (!verticesremanescentes.isEmpty()) {
+		while((!verticesremanescentes.isEmpty())){
                                  
-			System.out.print("tem adj! para o: ");
-            System.out.println(atual.getZ());
-            
-            // So termina qnd visitar todos os vertices
-			for(Vertice n: atual.getadjlist()){// Relaxamento dos vertices
-				System.out.print("ele é o: ");
-                System.out.println(n.getZ());
-                
-                relax(atual, n, grafo);
+                 // So termina qnd visitar todos os vertices
+			
+                for(Vertice n: atual.getadjlist()){// Relaxamento dos vertices
+                adj = atual.getadjlist();
+                 relax(atual, n, grafo);
                           
-                List <Vertice> aux = grafo.getgrafo();
+                                List <Vertice> aux = grafo.getgrafo();
              
-				for(int p = 0; p < grafo.getgrafo().size() - 1; p++) {	// não sei se precisa mas estou jogando os valores da dist atualizados no grafo original
-					Vertice aux2 = aux.get(p);
-                    
-					if(n.getZ().equals(aux2.getZ())){
-                    	aux2.setdist(n.getdist());	
+				for(int p = 0; p < grafo.getgrafo().size() - 1; p++){	// não sei se precisa mas estou jogando os valores da dist atualizados no grafo original
+                                        Vertice aux2 = aux.get(p);
+                                        if(n.getZ().equals(aux2.getZ())){
+						aux2.setdist(n.getdist());	
 					}
 				}
 			}
+                        
 			
-			adj = atual.getadjlist();
-                       
 			double menordist = 0;
 			Vertice temp = null;
-			
-			while(!adj.isEmpty()) {	// Escolher o proximo caminho pegando o menor caminho
+			while(temp == null){	// Escolher o proximo caminho pegando o menor caminho
 				
-				for(int p = 0; p < adj.size() - 1; p++) {	// Escolhe o menor caminho dentre os adjacentes
-					if((menordist<adj.get(p).getdist()) && verticesremanescentes.contains(adj.get(p))) {
-						menordist = adj.get(p).getdist();
-						temp = adj.get(p);
-                        System.out.println("entrei aqui");
-					}
+                            for(int p = 0; p < adj.size(); p++){	// Escolhe o menor caminho dentre os adjacentes
+			                  
+                                if((menordist<adj.get(p).getdist()) && verticesremanescentes.contains(adj.get(p))){
+                                menordist = adj.get(p).getdist();
+                                    temp = adj.get(p);
+                                             
+                                              }	
 				}
-                            
-                //   System.out.println("Escolhido:"+temp.getZ());
-                        
-				for(int p = 0; p < verticesremanescentes.size() -1; p++){	// verifica se o adjacente escolhido ja não foi visitado
-					if(temp.getZ().equals(verticesremanescentes.get(p).getZ()) ){
-						System.out.print("aqui: ");	
-                        verticesremanescentes.remove(atual);
-                        adj.remove(temp);
-						
-                        if(adj.isEmpty()) {
-                            System.out.print("n pode");	
-                                                   
-							temp = verticesremanescentes.get(0);	// Caso algum Vertice fique perdido entre vertices que ja foram visitados
-						}
-					}else{
-						adj.clear();
-					}
-				}
-			}
-            //  System.out.println("temporario"+temp.getZ());
+	}
+                        System.out.println("Escolhido: "+temp.getZ());
 			verticesremanescentes.remove(atual);
-            atual = temp;               
+			        verticesremanescentes.remove(temp);
+                        atual = temp;
+                        
+                        if(verticesremanescentes.isEmpty()){
+                            return;
+                        }
+                            
+                            
 		}
+               
 	}
 	
-	/**
-	 * Retorna o mapa contendo o caminho a ser feito.
-	 * 
-	 * @param grafo
-	 * @return
-	 */
 	public Map<String, String> mapa(Grafo grafo) {			
 		List<Vertice> minimap = new ArrayList<Vertice>();
 		minimap = grafo.getgrafo();
@@ -139,7 +118,6 @@ public class dijkstraAlgorithm{
 		}
 		return caminho;
 	}
-	
 	/**Retorna a distância final do percurso
 	 * 
 	 * @param grafo
@@ -158,12 +136,7 @@ public class dijkstraAlgorithm{
 			
 	}
 	
-	/**
-	 * Faz o relaxamento dos vértices
-	 * @param x
-	 * @param y
-	 * @param grafo
-	 */
+	
 	private void relax(Vertice x, Vertice y, Grafo grafo){
 		
 		double z = x.getdist() + grafo.getPesoAresta(x, y);
