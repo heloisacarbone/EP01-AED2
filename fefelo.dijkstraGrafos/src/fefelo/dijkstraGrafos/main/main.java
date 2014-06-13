@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fefelo.dijkstraGrafos.main;
 
 import java.io.BufferedReader;
@@ -20,13 +16,11 @@ import fefelo.dijkstraGrafos.grafo.Grafo;
 import fefelo.dijkstraGrafos.grafo.Vertice;
 
 public class main {
-
-	public static void main(String[] args) {
-
-        String linha = null;   
-        FileReader arq; 
-        String file =  "src/exemplos/input.txt";    
-        
+            
+        static String linha = null;   
+        static FileReader arq; 
+        static String file =  "src/exemplos/input.txt";
+        public static void main(String [] args){  
         try {
         	
         	try {
@@ -55,14 +49,13 @@ public class main {
               System.out.println(qtdVert);
               
                   
-              System.out.println("==========fefelo.dijkstraGrafos.grafordenadas ========");
+              System.out.println("==========coo..grafordenadas ========");
                     
                     
                      //fim da leitura da 1 linha
                 int[] a = new int[3];
                 int i =0;
                
-                List<Integer> auxCord = new ArrayList<Integer>();
                 List<Vertice> listaVertices = new ArrayList<Vertice>();
                 linha = leitor.readLine(); //pula a segunda linha (em branco)            
                 while((linha = leitor.readLine()) != null){
@@ -83,7 +76,6 @@ public class main {
                         String v = String.valueOf(a[0]);
                         Vertice vertice = new Vertice(v,a[1],a[2]);
                         listaVertices.add(vertice);
-                        grafo.addvertice(vertice);
                         System.out.println("Inicializa vertice: Vertice("+a[0]+","+ a[1]+","+a[2]+")");
                         i = 0;
                       // ->>>> Inicializa vertice: Vertice(a[0], a[1], a[2]);
@@ -206,17 +198,29 @@ public class main {
                  
                  
             System.out.println("=============== RESULTADOS ===================");
-          dijk.dijkstraAlgorithm(grafo);
-          Map<String, String> result = new HashMap<String,String>(); 
-          result=dijk.mapa(grafo);
-          for(String x: result.values()){
-              System.out.println("teste");
-          }
-          double maxDist=dijk.maxdistancegrafo(grafo); 
-
-            System.out.printf("Distancia MAxima "+ maxDist); 
-                    
-              
+            
+            
+            List<Vertice> listVert = new ArrayList<Vertice>();
+            listVert = grafo.getgrafo();
+            dijk.dijkstraAlgorithm(grafo);
+            Map <String,String> caminho2 = new HashMap<String,String>();
+            caminho2 = dijk.mapa(grafo);
+            double maxdist = dijk.maxdistancegrafo(grafo);
+            System.out.println("===================FINAL=========");
+            System.out.println("Analise GRAFO:");
+            System.out.println(caminho2);
+            /*for(Vertice vert: caminho2){
+            System.out.print(vert.getZ()+" ");
+            System.out.print(vert.getY()+" ");
+            System.out.print(vert.getX()+" ");
+            System.out.println(vert.getdist()+" ");
+            }*/
+            
+          
+          
+          System.out.println("DISTANCIA FINAL:"+maxdist);
+          
+             
                 leitor.close();  
                 arq.close();  
      
@@ -229,9 +233,7 @@ public class main {
           
            
                 }
-
     	}
-    	
     	
     	
     	/*1º parte: as quantidades de vertices e arestas será utilizado para auxiliar na criação do grafo 
@@ -240,7 +242,7 @@ public class main {
     	
     	2º parte: Cada linha sera recebido 3 valores 
     		1 - Uma String (mesmo que seje um inteiro eu inicializei td como string) que é a descrição do Vertice
-    		2 - um Int , A fefelo.dijkstraGrafos.grafordenada X do vertice
+    		2 - um Int , A coo..grafordenada X do vertice
     		3 - Um Int,  A cordenada Y do vertice
     		Lembrar que o Vertice eh inicializado (String z, int x, int y);
     		
@@ -257,4 +259,4 @@ public class main {
     	Final: Após terminar tudo acima, chame o metodo dijkstraAlgorithm(grafo x) Para ele calcular as distancias em relação 
     	ao inicio do percurso, em seguida use o mapa(grafo x) para retornar o mapa com o menor caminho e o maxdistancegrafo(grafo x)
     	para retornar a distancia total
-    	*/ 
+    	*/

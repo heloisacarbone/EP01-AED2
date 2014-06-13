@@ -1,11 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fefelo.dijkstraGrafos.grafo;
-
-
-import fefelo.dijkstraGrafos.grafo.Vertice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +16,20 @@ public class Grafo {
 	public List<Vertice> getgrafo(){		// Retorna a lista com os vertices
 		return this.adjList;
 	}
-	
+
 	public double getPesoAresta(Vertice x, Vertice y) {	// Calcula o peso da aresta baseado nas fefelo.dijkstraGrafosrdenadas de cada vertice
-		int n = (x.getX() - y.getX())^2;
-		int m = (x.getY() - y.getY())^2;
+		double n = Math.pow((x.getX() - y.getX()), 2);
+		double m = Math.pow((x.getY() - y.getY()),2);
 		return Math.sqrt(n+m);
 	}
-	
+	public Vertice retornaVertice(String x){
+		for(Vertice vertice: adjList){
+			if(x.equals(vertice.getZ())){
+				return vertice;
+			}
+		}Vertice y = null;
+		return y;
+	}
+
 
 }
