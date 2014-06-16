@@ -1,10 +1,13 @@
+﻿/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package fefelo.dijkstraGrafos.dijkstra;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import fefelo.dijkstraGrafos.grafo.Grafo;
 import fefelo.dijkstraGrafos.grafo.Vertice;
 
@@ -33,7 +36,7 @@ public class dijkstraAlgorithm {
      */
     public void dijkstraAlgorithm(Grafo grafo) {
     	verticesremanescentes = new ArrayList<Vertice>(grafo.getgrafo());// Criando uma list para passar por todos os Vertices
-		System.out.println(grafo.getgrafo());
+		
         for (Vertice y : verticesremanescentes) {			// Colocando todas as distancias em infinito
             y.setdist(Double.POSITIVE_INFINITY);
         }
@@ -50,6 +53,7 @@ public class dijkstraAlgorithm {
                 adj = atual.getadjlist();
                 
                 relax(atual, n, grafo);
+                
                 List<Vertice> aux = grafo.getgrafo();
                 for (int p = 0; p < grafo.getgrafo().size() - 1; p++) {	// não sei se precisa mas estou jogando os valores da dist atualizados no grafo original
                     if (n.getZ().equals(aux.get(p).getZ())) {
@@ -70,8 +74,10 @@ public class dijkstraAlgorithm {
 				temp = verticesremanescentes.get(0);
                 }
             }
+            
             verticesremanescentes.remove(temp);
             atual = temp;
+            
             if (verticesremanescentes.isEmpty()) {
                 return;
             }
@@ -103,8 +109,10 @@ public class dijkstraAlgorithm {
 					aux.add(second);
 					caminho.put(first, second);
 					first = second;
-					System.out.println(aux);
-					System.out.println(caminho);
+					
+					
+					
+					
 					if(second.equals(fim.getZ())) break;
 					
 					}else{
@@ -157,6 +165,8 @@ public class dijkstraAlgorithm {
 
     private void relax(Vertice x, Vertice y, Grafo grafo) {
         double z;
+        
+        
         if (x.getdist() == Double.POSITIVE_INFINITY || x.getdist() == 0) {
             z = grafo.getPesoAresta(x, y);
             y.setdist(z);

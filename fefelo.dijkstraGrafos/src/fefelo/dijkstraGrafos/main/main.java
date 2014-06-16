@@ -1,3 +1,7 @@
+﻿/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package fefelo.dijkstraGrafos.main;
 
 import java.io.BufferedReader;
@@ -10,230 +14,242 @@ import java.util.StringTokenizer;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Map;
-
 import fefelo.dijkstraGrafos.dijkstra.dijkstraAlgorithm;
 import fefelo.dijkstraGrafos.grafo.Grafo;
 import fefelo.dijkstraGrafos.grafo.Vertice;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.ListIterator;
+import java.util.Set;
 
 public class main {
-            
-        static String linha = null;   
-        static FileReader arq; 
-        static String file =  "src/exemplos/input.txt";
-        public static void main(String [] args){  
+
+    static String linha = null;
+    static FileReader arq;
+    static String file = "src/entradas/input.txt";
+
+    public static void main(String[] args) {
         try {
-        	
-        	try {
-        		file = args[0];
-        	} catch(Exception ex) {
-        		System.out.println("Utilizando o arquivo padrão de testes, que se encontra no src/exemplos/input, "
-        				+ "caso deseja inserir um arquivo diferente passe como argumento na hora de executar "
-        				+ "o programa");
-        	}
-        	
+
+            try {
+            	System.out.println(args[0]);
+                file = args[0];
+            } catch (Exception ex) {
+                System.out.println("Utilizando o arquivo padrão de testes, que se encontra no src/entradas/input, "
+                        + "caso deseja inserir um arquivo diferente passe como argumento na hora de executar "
+                        + "o programa");
+                file = "src/entradas/input.txt";
+            }
+
             arq = new FileReader(file);
-            
-            BufferedReader leitor = new BufferedReader(arq);  
+
+            BufferedReader leitor = new BufferedReader(arq);
             linha = leitor.readLine(); //Le a  primeira linha 
-            
-            //List<Vertice> vertEare = new ArrayList<Vertice>();
-            
+
             //leitura primeira linha 
             int qtdVert;
             dijkstraAlgorithm dijk = new dijkstraAlgorithm();
-                Grafo grafo = new Grafo();
-                StringTokenizer valores = new StringTokenizer(linha);  
-                String ln1 = valores.nextToken();  //Peguei apenas a qtd de vertice, pq de acordo com o felipe a de aresta é irrelevante
-                qtdVert = Integer.parseInt(ln1);
-              System.out.println("======= qtd vertice ==========");
-              System.out.println(qtdVert);
-              
-                  
-              System.out.println("==========coo..grafordenadas ========");
-                    
-                    
-                     //fim da leitura da 1 linha
-                int[] a = new int[3];
-                int i =0;
-               
-                List<Vertice> listaVertices = new ArrayList<Vertice>();
-                linha = leitor.readLine(); //pula a segunda linha (em branco)            
-                while((linha = leitor.readLine()) != null){
-                    if(linha.trim().length() == 0){
-                        break;
-                    } //para de ler quando encontra uma linha em branco
-                    StringTokenizer vCord = new StringTokenizer(linha);
-                        while(vCord.hasMoreTokens()){
-                                
-                             String aux = vCord.nextToken();
-                             System.out.println(aux);
-                             int cord = Integer.parseInt(aux);
-                             
-                             a[i] = cord;
-                             
-                             i++;
-                       }
-                        String v = String.valueOf(a[0]);
-                        Vertice vertice = new Vertice(v,a[1],a[2]);
-                        listaVertices.add(vertice);
-                        System.out.println("Inicializa vertice: Vertice("+a[0]+","+ a[1]+","+a[2]+")");
-                        i = 0;
-                      // ->>>> Inicializa vertice: Vertice(a[0], a[1], a[2]);
+            Grafo grafo = new Grafo();
+            StringTokenizer valores = new StringTokenizer(linha);
+            String ln1 = valores.nextToken();  
+            qtdVert = Integer.parseInt(ln1);
                       
-                        
-                        //grafo iniciado
-               }
-                grafo.startGrafo(listaVertices);
-                        
-                 System.out.println("============== ADJACENCIAS! =================");
-                       
-                List<Vertice> auxListVert = new ArrayList<Vertice>();
-                auxListVert.addAll(listaVertices); //copia a lista de vertices para uma auxiliar
-                int[] c = new int[2];
-                 int n = 0;
-                 while((linha = leitor.readLine()) != null){
-                    if(linha.trim().length() == 0){
-                        break;
-                    } //para de ler quando encontra uma linha em branco
-                     StringTokenizer adj = new StringTokenizer(linha);
-                        while(adj.hasMoreTokens()){
-                           String aux = adj.nextToken();
-                           int cam = Integer.parseInt(aux);
-                           c[n] = cam;
-                           n++;
-                        }
-                        
-                     Iterator it = listaVertices.listIterator();
-                     String c0 = String.valueOf(c[0]);
-                     String c1 = String.valueOf(c[1]);
-                     
-                     while(it.hasNext()){
-                         Vertice vertice = (Vertice) it.next();
-                         String desc = vertice.getZ();
-                         Iterator it2 = listaVertices.listIterator();
-                         Vertice compara = (Vertice) it2.next();
-                         String descCompara = compara.getZ();
-                         if(desc.equals(c0)){   //enquanto o vertice da lsita de vertices for diferente do que esta no input
-                             while(!descCompara.equals(c1)){
-                                 compara = (Vertice) it2.next();
-                                 descCompara = compara.getZ();
-                                 //sai do loop quando encontrar o c1, adjacente a c0
-                               
-                             }
-                              vertice.setadj(compara);
-                         }
-                     
-                     }
-                   Iterator it1 = listaVertices.listIterator();
-                     while(it1.hasNext()){
-                         Vertice vertice = (Vertice) it1.next();
-                         String desc = vertice.getZ();
-                         Iterator it2 = listaVertices.listIterator();
-                         Vertice compara = (Vertice) it2.next();
-                         String descCompara = compara.getZ();
-                         if(desc.equals(c1)){   //enquanto o vertice da lsita de vertices for diferente do que esta no input
-                             while(!descCompara.equals(c0)){
-                                 compara = (Vertice) it2.next();
-                                 descCompara = compara.getZ();
-                                 //sai do loop quando encontrar o c0, adjacente a c1
-                               
-                             }
-                              vertice.setadj(compara);
-                         }
-                     
-                     }
-                                          
-                          System.out.println("Adjacencias: "+c[0]+" com "+c[1]);
-                      
-                    n = 0;
-                 }
-                 
-                 for(Vertice vertex : listaVertices){
-                     String a1 = vertex.getZ();
-                        for(Vertice adjl : vertex.getadjlist()){
-                            String s2 = adjl.getZ();
-                            System.out.println("os adj de "+a1+" sao: " +s2);
-                        }
-                 }
-               
-                 for(Vertice vertex : listaVertices){
-                         String a1 = vertex.getZ();
-                         int s2 = vertex.sizeadj();
-                         System.out.println(a1 +"tem "+ s2 + "adjs");
-                     }
-                 /* 
-                     * TESTADO E FUNCIONANDO!
-                */
-                 //preciso fazer a parte de adjacencias e vertices
+
+            //fim da leitura da 1 linha
+            int[] a = new int[3];
+            int i = 0;
+
+            List<Vertice> listaVertices = new ArrayList<Vertice>();
+            linha = leitor.readLine(); //pula a segunda linha (em branco)            
+            while ((linha = leitor.readLine()) != null) {
+                if (linha.trim().length() == 0) {
+                    break;
+                } //para de ler quando encontra uma linha em branco
+                StringTokenizer vCord = new StringTokenizer(linha);
+                while (vCord.hasMoreTokens()) {
+
+                    String aux = vCord.nextToken();
                 
-                 System.out.println("============ caminho ===========");
-                          
-                 //le o caminhoa ser feito
-                 int[] b = new int[2];
-                 int h = 0;
-                 StringTokenizer caminho = new StringTokenizer(linha);
-                 while((linha = leitor.readLine()) != null){
-                    StringTokenizer adj = new StringTokenizer(linha);
-                        while(adj.hasMoreTokens()){
-                           String aux = adj.nextToken();
-                           int cam = Integer.parseInt(aux);
-                           b[h] = cam;
-                           h++;
+                    int cord = Integer.parseInt(aux);
+
+                    a[i] = cord;
+
+                    i++;
+                }
+                String v = String.valueOf(a[0]);
+                Vertice vertice = new Vertice(v, a[1], a[2]);
+                listaVertices.add(vertice);
+               
+                i = 0;
+                // ->>>> Inicializa vertice: Vertice(a[0], a[1], a[2]);
+
+
+                //grafo iniciado
+            }
+            grafo.startGrafo(listaVertices);
+
+            
+
+            List<Vertice> auxListVert = new ArrayList<Vertice>();
+            auxListVert.addAll(listaVertices); //copia a lista de vertices para uma auxiliar
+            int[] c = new int[2];
+            int n = 0;
+            while ((linha = leitor.readLine()) != null) {
+                if (linha.trim().length() == 0) {
+                    break;
+                } //para de ler quando encontra uma linha em branco
+                StringTokenizer adj = new StringTokenizer(linha);
+                while (adj.hasMoreTokens()) {
+                    String aux = adj.nextToken();
+                    int cam = Integer.parseInt(aux);
+                    c[n] = cam;
+                    n++;
+                }
+
+                Iterator it = listaVertices.listIterator();
+                String c0 = String.valueOf(c[0]);
+                String c1 = String.valueOf(c[1]);
+
+                while (it.hasNext()) {
+                    Vertice vertice = (Vertice) it.next();
+                    String desc = vertice.getZ();
+                    Iterator it2 = listaVertices.listIterator();
+                    Vertice compara = (Vertice) it2.next();
+                    String descCompara = compara.getZ();
+                    if (desc.equals(c0)) {   //enquanto o vertice da lista de vertices for diferente do que esta no input
+                        while (!descCompara.equals(c1)) {
+                            compara = (Vertice) it2.next();
+                            descCompara = compara.getZ();
+                            //sai do loop quando encontrar o c1, adjacente a c0
+
                         }
-                          System.out.println("Realizar caminho de "+b[0]+" a "+b[1]);
-                          
-                    h = 0;
-                 }
-                 
-                 String b0 = String.valueOf(b[0]);
-                 String b1 = String.valueOf(b[1]);
-                 for(Vertice vertex : listaVertices){
-                         String a1 = vertex.getZ();
-                         if(a1.equals(b0))
-                                dijk.inicio(vertex);
-                         
-                         if(a1.equals(b1))
-                                dijk.fim(vertex);
-                     }
-                 
-                 
-            System.out.println("=============== RESULTADOS ===================");
-            
-            
-            List<Vertice> listVert = new ArrayList<Vertice>();
-            listVert = grafo.getgrafo();
+                        vertice.setadj(compara);
+                    }
+
+                }
+                Iterator it1 = listaVertices.listIterator();
+                while (it1.hasNext()) {
+                    Vertice vertice = (Vertice) it1.next();
+                    String desc = vertice.getZ();
+                    Iterator it2 = listaVertices.listIterator();
+                    Vertice compara = (Vertice) it2.next();
+                    String descCompara = compara.getZ();
+                    if (desc.equals(c1)) {   //enquanto o vertice da lista de vertices for diferente do que esta no input
+                        while (!descCompara.equals(c0)) {
+                            compara = (Vertice) it2.next();
+                            descCompara = compara.getZ();
+                            //sai do loop quando encontrar o c0, adjacente a c1
+
+                        }
+                        vertice.setadj(compara);
+                    }
+
+                }
+
+             
+
+                n = 0;
+            }
+
+            //le o caminhoa ser feito
+            int[] b = new int[2];
+            int h = 0;
+            while ((linha = leitor.readLine()) != null) {
+                StringTokenizer adj = new StringTokenizer(linha);
+                while (adj.hasMoreTokens()) {
+                    String aux = adj.nextToken();
+                    int cam = Integer.parseInt(aux);
+                    b[h] = cam;
+                    h++;
+                }
+               
+
+                h = 0;
+            }
+
+            String b0 = String.valueOf(b[0]);
+            String b1 = String.valueOf(b[1]);
+            for (Vertice vertex : listaVertices) {
+                String a1 = vertex.getZ();
+                if (a1.equals(b0)) {
+                    dijk.inicio(vertex);
+                }
+
+                if (a1.equals(b1)) {
+                    dijk.fim(vertex);
+                }
+            }
+
+
+           
+
+
+            List<String> listKey = new ArrayList<String>();
+            List<String> listVal = new ArrayList<String>();
             dijk.dijkstraAlgorithm(grafo);
-            Map <String,String> caminho2 = new HashMap<String,String>();
+            Map<String, String> caminho2 = new HashMap<String, String>();
             caminho2 = dijk.mapa(grafo);
             double maxdist = dijk.maxdistancegrafo(grafo);
-            System.out.println("===================FINAL=========");
-            System.out.println("Analise GRAFO:");
-            System.out.println(caminho2);
-            /*for(Vertice vert: caminho2){
-            System.out.print(vert.getZ()+" ");
-            System.out.print(vert.getY()+" ");
-            System.out.print(vert.getX()+" ");
-            System.out.println(vert.getdist()+" ");
-            }*/
-            
-          
-          
-          System.out.println("DISTANCIA FINAL:"+maxdist);
-          
-             
-                leitor.close();  
-                arq.close();  
-     
-                        } catch (FileNotFoundException ex){
-                System.out.println("Arquivo não encontrado");
-            } catch (IOException ex) {
-                System.out.println("Erro");
+
+            File fileOut = new File("src/saidas/output.txt");
+            Iterator itKey = caminho2.keySet().iterator();
+            Iterator itVal = caminho2.values().iterator();
+            while (itKey.hasNext()) {
+                Object k = itKey.next();
+                String key = String.valueOf(k);
+                listKey.add(key);
             }
-      
-          
-           
+            while (itVal.hasNext()) {
+                Object v = itVal.next();
+                String val = String.valueOf(v);
+                listVal.add(val);
+            }
+            if (fileOut.exists()) {
+                fileOut.delete();
+            } else {
+                fileOut.createNewFile();
+            }
+            FileWriter out = new FileWriter(fileOut, true);
+            PrintWriter printWriter = new PrintWriter(out);
+            printWriter.println("=================================");
+            ListIterator ltKey = listKey.listIterator(listKey.size());
+            ListIterator ltVal = listVal.listIterator(listVal.size());
+            String Imprime = "";
+            while (ltKey.hasPrevious()) {
+                String ltk = String.valueOf(ltKey.previous());
+                Imprime += (ltk + " ");
+                while (ltVal.hasPrevious()) {
+                    String ltv = String.valueOf(ltVal.previous());
+                    Imprime += (ltv);
+                    ltVal.remove();
+                    break;
                 }
-    	}
+                printWriter.println(Imprime);
+                Imprime = "";
+                ltKey.remove();
+            }
+            printWriter.println("");
+
+
+            printWriter.println((int) maxdist + 1);
+            printWriter.print("=================================");
+            out.close(); // cria o arquivo 
+
+            leitor.close();
+            arq.close();
+
+        } catch (FileNotFoundException ex) {
+            System.out.println("Arquivo não encontrado");
+        } catch (IOException ex) {
+            System.out.println("Erro");
+        }
+
+
+
+    }
+}
     	
     	
     	/*1º parte: as quantidades de vertices e arestas será utilizado para auxiliar na criação do grafo 
@@ -242,7 +258,7 @@ public class main {
     	
     	2º parte: Cada linha sera recebido 3 valores 
     		1 - Uma String (mesmo que seje um inteiro eu inicializei td como string) que é a descrição do Vertice
-    		2 - um Int , A coo..grafordenada X do vertice
+    		2 - um Int , A fefelo.dijkstraGrafos.dijkstra..grafordenada X do vertice
     		3 - Um Int,  A cordenada Y do vertice
     		Lembrar que o Vertice eh inicializado (String z, int x, int y);
     		
