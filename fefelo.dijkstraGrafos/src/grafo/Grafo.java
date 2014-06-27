@@ -2,11 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package fefelo.dijkstraGrafos.grafo;
+package grafo;
 
 
-import fefelo.dijkstraGrafos.grafo.Vertice;
     
+import grafo.Vertice;
+
 import java.util.ArrayList;
 import java.util.List;
 

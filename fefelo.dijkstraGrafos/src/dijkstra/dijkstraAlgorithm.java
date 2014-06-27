@@ -2,14 +2,15 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package fefelo.dijkstraGrafos.dijkstra;
+package dijkstra;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import fefelo.dijkstraGrafos.grafo.Grafo;
-import fefelo.dijkstraGrafos.grafo.Vertice;
+
+import grafo.Grafo;
+import grafo.Vertice;
 
 
 public class dijkstraAlgorithm {

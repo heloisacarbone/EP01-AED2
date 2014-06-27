@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package fefelo.dijkstraGrafos.main;
+package main;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -14,15 +14,16 @@ import java.util.StringTokenizer;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Map;
-import fefelo.dijkstraGrafos.dijkstra.dijkstraAlgorithm;
-import fefelo.dijkstraGrafos.grafo.Grafo;
-import fefelo.dijkstraGrafos.grafo.Vertice;
+
+import grafo.Grafo;
+import grafo.Vertice;
+
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ListIterator;
-import java.util.Set;
+
+import dijkstra.dijkstraAlgorithm;
 
 public class main {
 
@@ -31,6 +32,11 @@ public class main {
     static String file = "src/entradas/input.txt";
 
     public static void main(String[] args) {
+    	
+    	if (args.length == 0) {
+        
+        }
+    	
         try {
 
             try {
@@ -44,7 +50,7 @@ public class main {
             }
 
             arq = new FileReader(file);
-
+            System.out.println("arquivo");
             BufferedReader leitor = new BufferedReader(arq);
             linha = leitor.readLine(); //Le a  primeira linha 
 
@@ -194,6 +200,7 @@ public class main {
             double maxdist = dijk.maxdistancegrafo(grafo);
 
             File fileOut = new File("src/saidas/output.txt");
+            System.out.println("Saida");
             Iterator itKey = caminho2.keySet().iterator();
             Iterator itVal = caminho2.values().iterator();
             while (itKey.hasNext()) {
@@ -211,7 +218,9 @@ public class main {
             } else {
                 fileOut.createNewFile();
             }
+            System.out.println("Pre");
             FileWriter out = new FileWriter(fileOut, true);
+            System.out.println("FILEE");
             PrintWriter printWriter = new PrintWriter(out);
             printWriter.println("=================================");
             ListIterator ltKey = listKey.listIterator(listKey.size());
@@ -236,14 +245,14 @@ public class main {
             printWriter.println((int) maxdist + 1);
             printWriter.print("=================================");
             out.close(); // cria o arquivo 
-
+            System.out.println("chegou aqui");
             leitor.close();
             arq.close();
 
         } catch (FileNotFoundException ex) {
             System.out.println("Arquivo não encontrado");
         } catch (IOException ex) {
-            System.out.println("Erro");
+            System.out.println(ex);
         }
 
 

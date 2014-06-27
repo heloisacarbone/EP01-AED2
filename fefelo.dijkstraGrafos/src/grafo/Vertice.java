@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package fefelo.dijkstraGrafos.grafo;
+package grafo;
 
 
 import java.io.ObjectInputStream.GetField;
