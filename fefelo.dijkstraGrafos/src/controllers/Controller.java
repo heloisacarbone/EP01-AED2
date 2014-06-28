@@ -19,18 +19,18 @@ public class Controller {
 		int type = 0;
 		int numVertType = 0;
 		List<Vertice> listaVertices = new ArrayList<Vertice>();
-		List<Vertice> auxListVert = new ArrayList<Vertice>();
+		List<Vertice> auxListVert = new ArrayList<Vertice>(); //Copia do listaVertices
 		
 		int counter = 0;
 		while ((line = reader.readLine()) != null) {
 			StringTokenizer values = new StringTokenizer(line);
 			if (counter == 0) {
-				// Primeira linha do arquivo, separar valores
+				// Primeira linha do arquivo, quantidade de vértices e quantidade de adjacentes
 				qtdVert = Integer.parseInt(values.nextToken()); 
 				qtdAdj = Integer.parseInt(values.nextToken());
 				
 			} else if (counter >= 2 && counter <= (qtdVert+1)) {
-				 //para de ler quando encontra uma linha em branco
+				// Vertices com suas coordenadas são inceridos em um ArrayList
 				int[] a = new int[3];
 		        int i = 0;
 	            while (values.hasMoreTokens()) {
@@ -42,9 +42,26 @@ public class Controller {
 	             String v = String.valueOf(a[0]);
 	             Vertice vertice = new Vertice(v, a[1], a[2]);
 	             listaVertices.add(vertice);
+	             auxListVert.add(vertice);
 	           
 			} else if (counter >= (qtdVert+3) && counter <= (qtdVert+2+qtdAdj)) {
 				// Lê os adjacentes
+				
+	            int[] a = new int[2];
+	            int i = 0;
+	            
+                while (values.hasMoreTokens()) {
+                    String aux = values.nextToken();
+                    int cam = Integer.parseInt(aux);
+                    a[i] = cam;
+                    i++;
+                }
+         
+                String c0 = String.valueOf(a[0]);
+                String c1 = String.valueOf(a[1]);
+
+                controllSetAdj(listaVertices, c0, c1);
+                controllSetAdj(listaVertices, c1, c0);			
 			} else if (counter == (qtdVert+4+qtdAdj)) {
 				// quarta etapa
 				type = Integer.parseInt(values.nextToken());
@@ -73,73 +90,42 @@ public class Controller {
         Grafo grafo = new Grafo();
         grafo.startGrafo(listaVertices);
         
-	}              
+	}            
+	
+	/**
+	 * Seta o adjacente v1 no v0.
+	 * @param listaVertices
+	 * @param v0
+	 * @param v1
+	 */
+	public static void controllSetAdj(List<Vertice> listaVertices, String v0, String v1) {
+		ListIterator<Vertice> it = listaVertices.listIterator();
+
+        while (it.hasNext()) {
+            Vertice vertice = (Vertice) it.next();
+            String desc = vertice.getZ();
+            
+            ListIterator<Vertice> it2 = listaVertices.listIterator();
+            Vertice compara = (Vertice) it2.next();
+            String descCompara = compara.getZ();
+            if (desc.equals(v0)) {   
+            	//enquanto o vertice da lista de vertices for diferente do que esta no input
+                while (!descCompara.equals(v1)) {
+                    compara = (Vertice) it2.next();
+                    descCompara = compara.getZ();
+                    //sai do loop quando encontrar o c1, adjacente a c0
+                }
+                vertice.setadj(compara);
+            }
+
+        }
+	}
          
        
          
 
-         // PArando na adjacencia
+      
 /*
-         
-         auxListVert.addAll(listaVertices); //copia a lista de vertices para uma auxiliar
-         int[] c = new int[2];
-         int n = 0;
-         while ((linha = leitor.readLine()) != null) {
-             if (linha.trim().length() == 0) {
-                 break;
-             } //para de ler quando encontra uma linha em branco
-             StringTokenizer adj = new StringTokenizer(linha);
-             while (adj.hasMoreTokens()) {
-                 String aux = adj.nextToken();
-                 int cam = Integer.parseInt(aux);
-                 c[n] = cam;
-                 n++;
-             }
-
-             Iterator it = listaVertices.listIterator();
-             String c0 = String.valueOf(c[0]);
-             String c1 = String.valueOf(c[1]);
-
-             while (it.hasNext()) {
-                 Vertice vertice = (Vertice) it.next();
-                 String desc = vertice.getZ();
-                 Iterator it2 = listaVertices.listIterator();
-                 Vertice compara = (Vertice) it2.next();
-                 String descCompara = compara.getZ();
-                 if (desc.equals(c0)) {   //enquanto o vertice da lista de vertices for diferente do que esta no input
-                     while (!descCompara.equals(c1)) {
-                         compara = (Vertice) it2.next();
-                         descCompara = compara.getZ();
-                         //sai do loop quando encontrar o c1, adjacente a c0
-
-                     }
-                     vertice.setadj(compara);
-                 }
-
-             }
-             Iterator it1 = listaVertices.listIterator();
-             while (it1.hasNext()) {
-                 Vertice vertice = (Vertice) it1.next();
-                 String desc = vertice.getZ();
-                 Iterator it2 = listaVertices.listIterator();
-                 Vertice compara = (Vertice) it2.next();
-                 String descCompara = compara.getZ();
-                 if (desc.equals(c1)) {   //enquanto o vertice da lista de vertices for diferente do que esta no input
-                     while (!descCompara.equals(c0)) {
-                         compara = (Vertice) it2.next();
-                         descCompara = compara.getZ();
-                         //sai do loop quando encontrar o c0, adjacente a c1
-
-                     }
-                     vertice.setadj(compara);
-                 }
-
-             }
-
-          
-
-             n = 0;
-         }
 
          //le o caminhoa ser feito
          int[] b = new int[2];
