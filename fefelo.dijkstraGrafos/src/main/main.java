@@ -4,32 +4,13 @@
  */
 package main;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.Map;
-
-import grafo.*;
 import controllers.*;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.util.ListIterator;
-
-import dijkstra.Dijkstra;
 
 public class main {
 
     static String file = "src/entradas/input.txt";
 
-    public static void main(String[] args) throws NumberFormatException, IOException {
+    public static void main(String[] args) {
     	
     	if (args.length != 0) {
     		file = args[0]; 
