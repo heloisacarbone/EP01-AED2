@@ -75,15 +75,16 @@ public class Controller {
 			} else if (type == 2 || type == 3 && counter == (qtdVert+5+qtdAdj)) {
 				numVertType = Integer.parseInt(values.nextToken());
 		
-			} else if (counter >= (qtdVert+6+qtdAdj) && counter <= (qtdVert+4+qtdAdj+numVertType)) {
+			} else if (counter >= (qtdVert+5+qtdAdj) && counter <= (qtdVert+5+qtdAdj+numVertType)) {
 				int[] conjunto = new int[2];
 				conjunto[0] = Integer.parseInt(values.nextToken());
 				conjunto[1] = Integer.parseInt(values.nextToken());
+				
 				conjuntosBusca.add(conjunto);
 			}
 			counter++;
 		}
-		
+
 		reader.close();
         Grafo grafo = graphGenerator(qtdVert, listaVertices);
         initializeFactoryDijkstra(grafo, listaVertices, type, verticeType1, numVertType, conjuntosBusca);
@@ -95,7 +96,7 @@ public class Controller {
 		List<String> listKey = new ArrayList<String>();
         List<String> listValue = new ArrayList<String>();
         PrintWriter output = Text.openWriteFile("src/saidas/output.txt");
-
+       
         for (int i = 0; i < caminhos.size(); i++) {
 	        Iterator<String> itKey = caminhos.get(i).keySet().iterator();
 	        Iterator<String> itVal = caminhos.get(i).values().iterator();
@@ -137,6 +138,7 @@ public class Controller {
 	        output.println(maxdists.get(i).intValue() + 1);
 	        output.print("=================================");
         }
+        output.close();
         Text.closeFiles();
 	}
 
@@ -167,7 +169,6 @@ public class Controller {
 			Map<Integer, Map<String, String>> caminhos = new HashMap<Integer, Map<String, String>>();
 			Map<Integer, Double> maxdists = new HashMap<Integer, Double>();
 			if (numConjuntoVertices >= 1) {
-				
 				for (int i = 0; i < conjuntosBusca.size(); i++) {
 					int[] conjunto = conjuntosBusca.get(i);
 					String v0 = String.valueOf(conjunto[0]);
