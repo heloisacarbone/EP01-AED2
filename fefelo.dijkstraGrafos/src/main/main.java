@@ -23,7 +23,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ListIterator;
 
-import dijkstra.dijkstraAlgorithm;
+import dijkstra.Dijkstra;
 
 public class main {
 

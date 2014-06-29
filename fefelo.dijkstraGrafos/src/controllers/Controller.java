@@ -16,10 +16,14 @@ public class Controller {
 		int qtdVert = 0;
 		int qtdAdj = 0;
 		
-		int type = 0;
-		int numVertType = 0;
 		List<Vertice> listaVertices = new ArrayList<Vertice>();
 		List<Vertice> auxListVert = new ArrayList<Vertice>(); //Copia do listaVertices
+		
+		int type = 0;
+		String verticeType1 = null;
+		int numVertType = 0;
+		
+		List<int[]> conjuntosBusca = new ArrayList<int[]>();
 		
 		int counter = 0;
 		while ((line = reader.readLine()) != null) {
@@ -52,8 +56,8 @@ public class Controller {
 	            
                 while (values.hasMoreTokens()) {
                     String aux = values.nextToken();
-                    int cam = Integer.parseInt(aux);
-                    a[i] = cam;
+                    int caminho = Integer.parseInt(aux);
+                    a[i] = caminho;
                     i++;
                 }
          
@@ -65,32 +69,136 @@ public class Controller {
 			} else if (counter == (qtdVert+4+qtdAdj)) {
 				// quarta etapa
 				type = Integer.parseInt(values.nextToken());
-			} else if (counter == (qtdVert+5+qtdAdj)) {
-				numVertType = Integer.parseInt(values.nextToken());
-			} else if (counter >= (qtdVert+6+qtdAdj) && counter <= (qtdVert+4+qtdAdj+numVertType)) {
+			} else if (type == 1 && counter == (qtdVert+5+qtdAdj)) {
+				verticeType1 = values.nextToken();
 				
+			} else if (type == 2 || type == 3 && counter == (qtdVert+5+qtdAdj)) {
+				numVertType = Integer.parseInt(values.nextToken());
+		
+			} else if (counter >= (qtdVert+6+qtdAdj) && counter <= (qtdVert+4+qtdAdj+numVertType)) {
+				int[] conjunto = new int[2];
+				conjunto[0] = Integer.parseInt(values.nextToken());
+				conjunto[1] = Integer.parseInt(values.nextToken());
+				conjuntosBusca.add(conjunto);
 			}
 			counter++;
-			
 		}
 		
-   
-        
-        grafoGenerator(qtdVert, listaVertices);
-		
-	}
-
-	public static void initializeGraphXML(String file) {
-
+		reader.close();
+        Grafo grafo = graphGenerator(qtdVert, listaVertices);
+        initializeFactoryDijkstra(grafo, listaVertices, type, verticeType1, numVertType, conjuntosBusca);
 		
 	}
 	
-	public static void grafoGenerator(int qtdVert, List<Vertice> listaVertices) {
-        dijkstraAlgorithm dijk = new dijkstraAlgorithm();
+	public static void outputTXT(int type, Map<Integer, Map<String, String>> caminhos, 
+			Map<Integer, Double> maxdists) {
+		List<String> listKey = new ArrayList<String>();
+        List<String> listValue = new ArrayList<String>();
+        PrintWriter output = Text.openWriteFile("src/saidas/output.txt");
+
+        for (int i = 0; i < caminhos.size(); i++) {
+	        Iterator<String> itKey = caminhos.get(i).keySet().iterator();
+	        Iterator<String> itVal = caminhos.get(i).values().iterator();
+	        
+	        while (itKey.hasNext()) {
+	            Object k = itKey.next();
+	            String key = String.valueOf(k);
+	            listKey.add(key);
+	        }
+	        
+	        while (itVal.hasNext()) {
+	            Object v = itVal.next();
+	            String val = String.valueOf(v);
+	            listValue.add(val);
+	        }
+	        
+	        output.println("=================================");
+	        
+	        ListIterator<String> ltKey = listKey.listIterator(listKey.size());
+	        ListIterator<String> ltVal = listValue.listIterator(listValue.size());
+	        String Imprime = "";
+	        while (ltKey.hasPrevious()) {
+	            String ltk = String.valueOf(ltKey.previous());
+	            Imprime += (ltk + " ");
+	            while (ltVal.hasPrevious()) {
+	                String ltv = String.valueOf(ltVal.previous());
+	                Imprime += (ltv);
+	                ltVal.remove();
+	                break;
+	            }
+	            output.println(Imprime);
+	            Imprime = "";
+	            ltKey.remove();
+	        }
+	        
+	        output.println("");
+	
+	
+	        output.println(maxdists.get(i).intValue() + 1);
+	        output.print("=================================");
+        }
+        Text.closeFiles();
+	}
+
+	
+	
+	public static Grafo graphGenerator(int qtdVert, List<Vertice> listaVertices) {
+        
         Grafo grafo = new Grafo();
         grafo.startGrafo(listaVertices);
+        return grafo;
         
 	}            
+	
+	public static void initializeFactoryDijkstra(Grafo grafo, List<Vertice> listaVertices, int type, String verticeType1, 
+			int numConjuntoVertices, List<int[]> conjuntosBusca)  {
+		
+		// Acho que aqui vc chama o FACTORY e passa os dados para ele, mas não sei direito.
+		Dijkstra dijk = new Dijkstra();
+		
+		if (type == 1) {
+			// 1 Vértice acha o caminho minimo para todos
+			
+			
+			
+		} else if (type == 2 || type == 3) {
+			// O que nós já temos feito
+			
+			Map<Integer, Map<String, String>> caminhos = new HashMap<Integer, Map<String, String>>();
+			Map<Integer, Double> maxdists = new HashMap<Integer, Double>();
+			if (numConjuntoVertices >= 1) {
+				
+				for (int i = 0; i < conjuntosBusca.size(); i++) {
+					int[] conjunto = conjuntosBusca.get(i);
+					String v0 = String.valueOf(conjunto[0]);
+			        String v1 = String.valueOf(conjunto[1]);
+			        
+			        // inicializa dijkstra (Talvez possa ser um método separado)
+			        for (Vertice v: listaVertices) {
+			        	String auxDescription = v.getZ();
+			            if (auxDescription.equals(v0)) {
+			                dijk.inicio(v);
+			            }
+	
+			            if (auxDescription.equals(v1)) {
+			                dijk.fim(v);
+			            }
+			        }
+			        
+			        dijk.dijkstraAlgorithm(grafo); 
+			        
+			        Map<String, String> caminho = new HashMap<String, String>();
+			        caminho = dijk.mapa(grafo);
+			        caminhos.put(i, caminho);
+			        
+			        double maxdist = dijk.maxdistancegrafo(grafo);
+			        maxdists.put(i, maxdist);
+				}
+		        outputTXT(type, caminhos, maxdists);
+			}
+	
+		}
+	}
 	
 	/**
 	 * Seta o adjacente v1 no v0.
@@ -103,12 +211,12 @@ public class Controller {
 
         while (it.hasNext()) {
             Vertice vertice = (Vertice) it.next();
-            String desc = vertice.getZ();
+            String auxDescricao = vertice.getZ();
             
             ListIterator<Vertice> it2 = listaVertices.listIterator();
             Vertice compara = (Vertice) it2.next();
             String descCompara = compara.getZ();
-            if (desc.equals(v0)) {   
+            if (auxDescricao.equals(v0)) {   
             	//enquanto o vertice da lista de vertices for diferente do que esta no input
                 while (!descCompara.equals(v1)) {
                     compara = (Vertice) it2.next();
@@ -120,111 +228,15 @@ public class Controller {
 
         }
 	}
+	
+	
+	// Temos que fazer um XML TBM 
+	public static void initializeGraphXML(String file) {
+	
+			
+	}
          
-       
-         
-
       
-/*
-
-         //le o caminhoa ser feito
-         int[] b = new int[2];
-         int h = 0;
-         while ((linha = leitor.readLine()) != null) {
-             StringTokenizer adj = new StringTokenizer(linha);
-             while (adj.hasMoreTokens()) {
-                 String aux = adj.nextToken();
-                 int cam = Integer.parseInt(aux);
-                 b[h] = cam;
-                 h++;
-             }
-            
-
-             h = 0;
-         }
-
-         String b0 = String.valueOf(b[0]);
-         String b1 = String.valueOf(b[1]);
-         for (Vertice vertex : listaVertices) {
-             String a1 = vertex.getZ();
-             if (a1.equals(b0)) {
-                 dijk.inicio(vertex);
-             }
-
-             if (a1.equals(b1)) {
-                 dijk.fim(vertex);
-             }
-         }
-
-
-        
-
-
-         List<String> listKey = new ArrayList<String>();
-         List<String> listVal = new ArrayList<String>();
-         dijk.dijkstraAlgorithm(grafo);
-         Map<String, String> caminho2 = new HashMap<String, String>();
-         caminho2 = dijk.mapa(grafo);
-         double maxdist = dijk.maxdistancegrafo(grafo);
-
-         File fileOut = new File("src/saidas/output.txt");
-         System.out.println("Saida");
-         Iterator itKey = caminho2.keySet().iterator();
-         Iterator itVal = caminho2.values().iterator();
-         while (itKey.hasNext()) {
-             Object k = itKey.next();
-             String key = String.valueOf(k);
-             listKey.add(key);
-         }
-         while (itVal.hasNext()) {
-             Object v = itVal.next();
-             String val = String.valueOf(v);
-             listVal.add(val);
-         }
-         if (fileOut.exists()) {
-             fileOut.delete();
-         } else {
-             fileOut.createNewFile();
-         }
-         System.out.println("Pre");
-         FileWriter out = new FileWriter(fileOut, true);
-         System.out.println("FILEE");
-         PrintWriter printWriter = new PrintWriter(out);
-         printWriter.println("=================================");
-         ListIterator ltKey = listKey.listIterator(listKey.size());
-         ListIterator ltVal = listVal.listIterator(listVal.size());
-         String Imprime = "";
-         while (ltKey.hasPrevious()) {
-             String ltk = String.valueOf(ltKey.previous());
-             Imprime += (ltk + " ");
-             while (ltVal.hasPrevious()) {
-                 String ltv = String.valueOf(ltVal.previous());
-                 Imprime += (ltv);
-                 ltVal.remove();
-                 break;
-             }
-             printWriter.println(Imprime);
-             Imprime = "";
-             ltKey.remove();
-         }
-         printWriter.println("");
-
-
-         printWriter.println((int) maxdist + 1);
-         printWriter.print("=================================");
-         out.close(); // cria o arquivo 
-         System.out.println("chegou aqui");
-         leitor.close();
-         arq.close();
-
-     } catch (FileNotFoundException ex) {
-         System.out.println("Arquivo não encontrado");
-     } catch (IOException ex) {
-         System.out.println(ex);
-     }
-
-
-*/
  
 
 }

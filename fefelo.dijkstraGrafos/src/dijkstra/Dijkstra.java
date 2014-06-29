@@ -13,7 +13,7 @@ import grafo.Grafo;
 import grafo.Vertice;
 
 
-public class dijkstraAlgorithm {
+public class Dijkstra {
 
     private Vertice inicio;
     private Vertice fim;
@@ -93,56 +93,56 @@ public class dijkstraAlgorithm {
 		String second = "1";
 		List<String> aux = new ArrayList<String>();
 		aux.add(first);
-	do{
-		List<Vertice> minimap = new ArrayList(minimap2.getgrafo());
-		while(!second.equals(fim.getZ()) && !first.equals(fim.getZ())){
-			for( int p = 0; p < minimap.size(); p++) {
-				if(first.equals(minimap.get(p).getZ())) {
-					List <Vertice> adj2 = new ArrayList(minimap.get(p).getadjlist());
-					double menor = Double.POSITIVE_INFINITY;
-					if(adj2.size()>0){
-						for(int p2 = 0; p2 < adj2.size(); p2++) {
-							if(menor > adj2.get(p2).getdist() && !aux.contains((adj2.get(p2)).getZ())) {
-								menor = adj2.get(p2).getdist();
-								second = adj2.get(p2).getZ();
-								}
+		do{
+			List<Vertice> minimap = new ArrayList(minimap2.getgrafo());
+			while(!second.equals(fim.getZ()) && !first.equals(fim.getZ())){
+				for( int p = 0; p < minimap.size(); p++) {
+					if(first.equals(minimap.get(p).getZ())) {
+						List <Vertice> adj2 = new ArrayList(minimap.get(p).getadjlist());
+						double menor = Double.POSITIVE_INFINITY;
+						if(adj2.size()>0){
+							for(int p2 = 0; p2 < adj2.size(); p2++) {
+								if(menor > adj2.get(p2).getdist() && !aux.contains((adj2.get(p2)).getZ())) {
+									menor = adj2.get(p2).getdist();
+									second = adj2.get(p2).getZ();
+									}
+							}
+						aux.add(second);
+						caminho.put(first, second);
+						first = second;
+						
+						
+						
+						
+						if(second.equals(fim.getZ())) break;
+						
+						}else{
+							for(String string: aux){
+								minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(string));
+							}
+							aux.remove(aux.size()-1);
+							caminho.remove(aux.get(aux.size()-1));
+							first = aux.get(aux.size()-1);
+							second = "";
 						}
-					aux.add(second);
-					caminho.put(first, second);
-					first = second;
-					
-					
-					
-					
-					if(second.equals(fim.getZ())) break;
-					
-					}else{
-						for(String string: aux){
-							minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(string));
-						}
-						aux.remove(aux.size()-1);
-						caminho.remove(aux.get(aux.size()-1));
-						first = aux.get(aux.size()-1);
-						second = "";
 					}
 				}
 			}
-		}
-		double teste2 = minimap2.retornaVertice(aux.get(aux.size()-1)).getdist();
-		double teste =  (minimap2.retornaVertice(aux.get(aux.size()-2)).getdist() + grafo.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1))));
-		if(teste == teste2){
-			return caminho;
+			double teste2 = minimap2.retornaVertice(aux.get(aux.size()-1)).getdist();
+			double teste =  (minimap2.retornaVertice(aux.get(aux.size()-2)).getdist() + grafo.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1))));
+			if(teste == teste2){
+				return caminho;
+				}
+			for(String string: aux){
+				minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(string));
 			}
-		for(String string: aux){
-			minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(string));
-		}
-		aux.remove(aux.size()-1);
-		caminho.remove(aux.get(aux.size()-1));
-		first = aux.get(aux.size()-1);
-		second = "";
-	}while(aux.size()>1);
-	return caminho;
-}
+			aux.remove(aux.size()-1);
+			caminho.remove(aux.get(aux.size()-1));
+			first = aux.get(aux.size()-1);
+			second = "";
+		}while(aux.size()>1);
+		return caminho;
+	}
 
     /**
      * Retorna a distância final do percurso
@@ -166,23 +166,17 @@ public class dijkstraAlgorithm {
 
     private void relax(Vertice x, Vertice y, Grafo grafo) {
         double z;
-        
-        
+       
         if (x.getdist() == Double.POSITIVE_INFINITY || x.getdist() == 0) {
             z = grafo.getPesoAresta(x, y);
             y.setdist(z);
         } else {
             z = x.getdist() + grafo.getPesoAresta(x, y);
 
-
             if (y.getdist() > z) {
                     y.setdist(z);
                     verticesremanescentes.add(y);
             }
-        
-        
         }
-
     }
-
 }
