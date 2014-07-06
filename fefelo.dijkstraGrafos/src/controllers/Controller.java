@@ -72,7 +72,7 @@ public class Controller {
 			} else if (type == 1 && counter == (qtdVert+5+qtdAdj)) {
 				verticeType1 = values.nextToken();
 				
-			} else if (type == 2 || type == 3 && counter == (qtdVert+5+qtdAdj)) {
+			} else if ((type == 2 || type == 3) && counter == (qtdVert+5+qtdAdj)) {
 				numVertType = Integer.parseInt(values.nextToken());
 		
 			} else if (counter >= (qtdVert+5+qtdAdj) && counter <= (qtdVert+5+qtdAdj+numVertType)) {
@@ -95,7 +95,7 @@ public class Controller {
 			Map<Integer, Double> maxdists) {
 		List<String> listKey = new ArrayList<String>();
         List<String> listValue = new ArrayList<String>();
-        PrintWriter output = Text.openWriteFile("src/saidas/output.txt");
+        PrintWriter output = Text.openWriteFile("src/saidas/output.txt");  
        
         for (int i = 0; i < caminhos.size(); i++) {
 	        Iterator<String> itKey = caminhos.get(i).keySet().iterator();
@@ -195,7 +195,14 @@ public class Controller {
 			        double maxdist = dijk.maxdistancegrafo(grafo);
 			        maxdists.put(i, maxdist);
 				}
-		        outputTXT(type, caminhos, maxdists);
+				
+				 if (type == 2) {
+					System.out.println("Criando window");
+					ControllerInterfaceGrafica.createWindow(grafo, caminhos.get(0));
+				}
+				
+				outputTXT(type, caminhos, maxdists);	
+		        
 			}
 	
 		}
@@ -237,7 +244,8 @@ public class Controller {
 			
 	}
          
-      
+    
+	
  
 
 }
