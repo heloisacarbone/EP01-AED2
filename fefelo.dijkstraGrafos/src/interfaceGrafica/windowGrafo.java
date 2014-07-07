@@ -16,22 +16,23 @@ public class windowGrafo extends JFrame{
 	
 	
 	public windowGrafo(Map<String, String> caminhos) {
-		Canvas canvas = new Canvas();
+		this.setLayout(null);
+		Canvas canvas = new Canvas(){
+			@Override
+			public void paint(Graphics g) {
+				
+				super.paint(g);
+				g.drawLine(0,0,100,100);
+			}
+		};
 		super.setTitle("Teste tipo 2");
 		canvas.setSize(500,500);
 	
 		
-		g = canvas.getGraphics();
 		
-		/* Não funciona 
-		g.drawLine(0,0,100,100);
-		
-		canvas.paint(g);
-		
-		canvas.update(g);
 		
 		super.add(canvas);
 		
-	*/
+	
 	}
 }
