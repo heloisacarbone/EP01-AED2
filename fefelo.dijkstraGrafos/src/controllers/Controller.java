@@ -276,7 +276,7 @@ public class Controller {
 				
 				 if (type == 2) {
 					System.out.println("Criando window");
-					ControllerInterfaceGrafica.createWindow(grafo, caminhos.get(0));
+					ControllerInterfaceGrafica.createWindow(grafo, caminhos.get(0), dijk.getInicio(), dijk.getFim());
 				}
 				
 				outputTXT(type, caminhos, maxdists);	

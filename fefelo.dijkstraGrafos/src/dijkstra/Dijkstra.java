@@ -18,7 +18,7 @@ public class Dijkstra {
     private Vertice inicio;
     private Vertice fim;
     private List<Vertice> verticesremanescentes;
-   private List<Vertice> adj;
+    private List<Vertice> adj;
     private Map<String, String> caminho = new HashMap<String, String>();
     private Vertice atual;
 
@@ -29,6 +29,14 @@ public class Dijkstra {
     public void fim(Vertice x) {	// Fim do caminho
         this.fim = x;
     }
+    
+    public Vertice getInicio(){
+    	return this.inicio;
+    }
+    
+    public Vertice getFim(){
+    	return this.fim;
+    }
 
     /**
      * Inicializa a execução do algoritmo do dijkstra sobre um grafo
@@ -36,8 +44,10 @@ public class Dijkstra {
      * @param grafo
      */
     public void dijkstraAlgorithm(Grafo grafo) {
+        
+
     	verticesremanescentes = new ArrayList<Vertice>(grafo.getgrafo());// Criando uma list para passar por todos os Vertices
-		
+
         for (Vertice y : verticesremanescentes) {			// Colocando todas as distancias em infinito
             y.setdist(Double.POSITIVE_INFINITY);
         }
@@ -110,12 +120,12 @@ public class Dijkstra {
 						aux.add(second);
 						caminho.put(first, second);
 						first = second;
-						
-						
-						
-						
+
+
+
+
 						if(second.equals(fim.getZ())) break;
-						
+
 						}else{
 							for(String string: aux){
 								minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(string));
