@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 
 public class ControllerInterfaceGrafica {
 	public static void createWindow(Grafo grafo, Map<String, String> caminho) {
-		windowGrafo window = new windowGrafo(caminho);
+		windowGrafo window = new windowGrafo(grafo, caminho);
 		window.setPreferredSize(new Dimension(500,500));
 		window.setMinimumSize(new Dimension(500,500));
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();

@@ -11,11 +11,9 @@ import grafo.Grafo;
 
 import javax.swing.*;
 
-public class windowGrafo extends JFrame{
-	private static Graphics g;
+public class windowGrafo extends JFrame{	
 	
-	
-	public windowGrafo(Map<String, String> caminhos) {
+	public windowGrafo(Grafo grafo, Map<String, String> caminhos) {
 		this.setLayout(null);
 		Canvas canvas = new Canvas(){
 			@Override
