@@ -139,8 +139,11 @@ public class Dijkstra {
 				}
 			}
 			double teste2 = minimap2.retornaVertice(aux.get(aux.size()-1)).getdist();
-			double teste =  (minimap2.retornaVertice(aux.get(aux.size()-2)).getdist() + grafo.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1))));
-			if(teste == teste2){
+                        double teste = 0;
+                        if(aux.size() > 2){
+                        teste =  (minimap2.retornaVertice(aux.get(aux.size()-2)).getdist() + grafo.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1))));
+                        }
+                        if(teste == teste2){
 				return caminho;
 				}
 			for(String string: aux){

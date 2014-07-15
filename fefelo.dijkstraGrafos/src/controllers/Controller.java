@@ -100,7 +100,9 @@ public class Controller {
 	
 	public static void outputTXT(int type, Map<Integer, Map<String, String>> caminhos, 
 			Map<Integer, Double> maxdists) {
-		List<String> listKey = new ArrayList<String>();
+		
+            System.out.println("AQUI");
+            List<String> listKey = new ArrayList<String>();
         List<String> listValue = new ArrayList<String>();
         PrintWriter output = Text.openWriteFile("src/saidas/output.txt");  
        
@@ -146,11 +148,12 @@ public class Controller {
 	        output.print("=================================");
         }
         output.close();
-        Text.closeFiles();
+        //Text.closeFiles();
 	}
 	
 	public static void outputXML(int type, Map<Integer, Map<String, String>> caminhos,
             Map<Integer, Double> maxdists) {
+            System.out.println("AQUI@");
 
         List<String> listKey = new ArrayList<String>();
         List<String> listValue = new ArrayList<String>();
@@ -280,7 +283,7 @@ public class Controller {
 				}
 				
 				outputTXT(type, caminhos, maxdists);	
-		        
+                                outputXML(type, caminhos, maxdists);
 			}
 	
 		}
@@ -318,7 +321,8 @@ public class Controller {
 	
 	// Temos que fazer um XML TBM 
 	public static void initializeGraphXML(String file) {
-		Document doc = null;
+	System.out.println("TESTE");	
+            Document doc = null;
         SAXBuilder builder = new SAXBuilder();
         try {
             doc = builder.build(file);

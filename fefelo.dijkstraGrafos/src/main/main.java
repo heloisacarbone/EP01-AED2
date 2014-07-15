@@ -5,13 +5,16 @@
 package main;
 
 import controllers.*;
+import interfaceGrafica.PrincipalFrame;
 
 public class main {
 
-    static String file = "src/entradas/input.txt";
-
+    static String file = "src/entradas/input2.txt";
+    
     public static void main(String[] args) {
-    	
+        // caso queira realizar testes com a parte gráfica descomente as 2 linahs de baixo e comente TODO o reste (inclusive a string ali de cima)
+        //PrincipalFrame frame = new PrincipalFrame();
+    	//   frame.setVisible(true);
     	if (args.length != 0) {
     		file = args[0]; 
         }
@@ -25,7 +28,7 @@ public class main {
     		
     	} else if (file.indexOf(".xml") != -1) {
     		try {
-    			Controller.initializeGraphXML(file);
+                         Controller.initializeGraphXML(file);
     		} catch (Exception ex) {
     			ex.printStackTrace();
     		}

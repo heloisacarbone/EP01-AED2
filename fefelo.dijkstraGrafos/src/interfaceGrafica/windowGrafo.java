@@ -16,7 +16,7 @@ public class windowGrafo extends JFrame{
 
 	public windowGrafo(final List<Vertice> verticesGrafo, final Map<String, String> caminhos, 
 			int size, final Vertice inicio, final Vertice fim) {
-		
+		VisualGrafo visual = new VisualGrafo(); 
 		this.setLayout(null);
 		Canvas canvas = new Canvas(){
 			@Override
@@ -50,7 +50,10 @@ public class windowGrafo extends JFrame{
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		super.setLocation(dim.width/2-super.getSize().width/2, dim.height/2-super.getSize().height/2);
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		super.setVisible(true);
+		
+                visual.getContentPane().add(canvas);
+                visual.pack();
+                visual.setVisible(true);
 		
 	}
 
