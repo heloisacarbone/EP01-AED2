@@ -74,8 +74,8 @@ public class Controller {
 					ControllerInterfaceGrafica.createWindow(grafo, caminhos.get(0), dijk.getInicio(), dijk.getFim());
 				}
 				
-				outputTXT(type, caminhos, maxdists);	
-                                outputXML(type, caminhos, maxdists);
+				//outputTXT(type, caminhos, maxdists);	
+                  //              outputXML(type, caminhos, maxdists);
 			}
 	
 		}
