@@ -138,7 +138,11 @@ public class Text implements FileInterface {
 	
 			reader.close();
 	        Grafo grafo = Controller.graphGenerator(qtdVert, listaVertices);
+	        
+	        // MELHOR RETORNAR O GRAFO -------- SUCKS
 	        Controller.initializeFactoryDijkstra(grafo, listaVertices, type, verticeType1, numVertType, conjuntosBusca);
+	        
+	        //Desaclopar, não pode chamar o initializeFactory "!!!!!!! FUCK
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
