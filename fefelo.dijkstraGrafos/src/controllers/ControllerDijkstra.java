@@ -14,16 +14,7 @@ import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
-public class Controller {
-	
-	
-	public static Grafo graphGenerator(int qtdVert, List<Vertice> listaVertices) {
-        
-        Grafo grafo = new Grafo();
-        grafo.startGrafo(listaVertices);
-        return grafo;
-        
-	}            
+public class ControllerDijkstra {       
 	
 	public static void initializeFactoryDijkstra(Grafo grafo, List<Vertice> listaVertices, int type, String verticeType1, 
 			int numConjuntoVertices, List<int[]> conjuntosBusca)  {
@@ -74,8 +65,15 @@ public class Controller {
 					ControllerInterfaceGrafica.createWindow(grafo, caminhos.get(0), dijk.getInicio(), dijk.getFim());
 				}
 				
-				//outputTXT(type, caminhos, maxdists);	
-                  //              outputXML(type, caminhos, maxdists);
+				 
+				 // Imprimindo output
+				 
+				 FileContext fc = new FileContext();
+				 fc.setFile(new Text());
+				 fc.print(type, caminhos, maxdists);
+				 fc.setFile(new Xml());
+				 fc.print(type, caminhos, maxdists);
+			
 			}
 	
 		}

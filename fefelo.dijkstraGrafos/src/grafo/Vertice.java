@@ -50,6 +50,9 @@ public final class Vertice {
 	public void setadj(Vertice x) {			// Adiciona um vertice vizinho ao vertice atual
 		this.adjacentes.add(x);
 	}
+	public void setadjlist(List<Vertice> list){
+		this.adjacentes.addAll(list);
+	}
 
 	public Vertice getadj(int x) {			// Retorna um vertice vizinho
 		return adjacentes.get(x);

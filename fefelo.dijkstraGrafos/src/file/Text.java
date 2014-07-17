@@ -11,57 +11,15 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import controllers.Controller;
+import controllers.ControllerDijkstra;
 
-public class Text implements FileInterface {
-	private static FileReader readArq;
-	private static FileWriter writeArq;
-	
-	public static BufferedReader openReadFile(String fileName) {
-		try {
-			readArq = new FileReader(fileName);
-			BufferedReader leitor = new BufferedReader(readArq);
-			return leitor;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return null;
-		}
-	}
-	
-	
-	
-	public static PrintWriter openWriteFile(String fileName) {
-		try {
-			File fileOut = new File(fileName);
-			if (fileOut.exists()) {
-	            fileOut.delete();
-	        } else {
-	            fileOut.createNewFile();
-	        }
-			writeArq = new FileWriter(fileOut, true);
-	        PrintWriter printWriter = new PrintWriter(writeArq);
-	        return printWriter;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return null;
-		}
-	}
-	
-	public static void closeFiles(){
-		try {
-			readArq.close();
-			writeArq.close();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
-
+public class Text implements FileInterface {	
 
 	@Override
 	public void initializeGraph(String file) {
 		try {
-			BufferedReader reader = openReadFile(file);
+			FileReader readArq = new FileReader(file);
+			BufferedReader reader = new BufferedReader(readArq);
 			String line = "";
 			
 			int qtdVert = 0;
@@ -115,8 +73,8 @@ public class Text implements FileInterface {
 	                String c0 = String.valueOf(a[0]);
 	                String c1 = String.valueOf(a[1]);
 	
-	                Controller.controllSetAdj(listaVertices, c0, c1);
-	                Controller.controllSetAdj(listaVertices, c1, c0);			
+	                ControllerDijkstra.controllSetAdj(listaVertices, c0, c1);
+	                ControllerDijkstra.controllSetAdj(listaVertices, c1, c0);			
 				} else if (counter == (qtdVert+4+qtdAdj)) {
 					// quarta etapa
 					type = Integer.parseInt(values.nextToken());
@@ -137,10 +95,9 @@ public class Text implements FileInterface {
 			}
 	
 			reader.close();
-	        Grafo grafo = Controller.graphGenerator(qtdVert, listaVertices);
+			Grafo grafo = new Grafo(listaVertices);
 	        
-	        // MELHOR RETORNAR O GRAFO -------- SUCKS
-	        Controller.initializeFactoryDijkstra(grafo, listaVertices, type, verticeType1, numVertType, conjuntosBusca);
+	        ControllerDijkstra.initializeFactoryDijkstra(grafo, listaVertices, type, verticeType1, numVertType, conjuntosBusca);
 	        
 	        //Desaclopar, não pode chamar o initializeFactory "!!!!!!! FUCK
 		} catch (Exception ex) {
@@ -153,10 +110,21 @@ public class Text implements FileInterface {
 	@Override
 	public void output(int type, Map<Integer, Map<String, String>> caminhos,
 			Map<Integer, Double> maxdists) {
-	
+		// PS da para alterar para se escolher o nome da file
+		try {
 		List<String> listKey = new ArrayList<String>();
 	    List<String> listValue = new ArrayList<String>();
-	    PrintWriter output = Text.openWriteFile("src/saidas/output.txt");  
+	    
+	    File fileOut = new File("src/saidas/output.txt");
+		if (fileOut.exists()) {
+            fileOut.delete();
+        } else {
+            fileOut.createNewFile();
+        }
+		
+		FileWriter writeArq = new FileWriter(fileOut, true);
+	    
+	    PrintWriter output = new PrintWriter(writeArq);  
 	   
 	    for (int i = 0; i < caminhos.size(); i++) {
 	        Iterator<String> itKey = caminhos.get(i).keySet().iterator();
@@ -200,7 +168,9 @@ public class Text implements FileInterface {
 	        output.print("=================================");
 	    }
 	    output.close();
-	    //Text.closeFiles();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		
 	}
 }

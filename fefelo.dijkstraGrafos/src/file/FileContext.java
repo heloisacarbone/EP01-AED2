@@ -1,5 +1,7 @@
 package file;
 
+import grafo.Grafo;
+
 import java.util.Map;
 // O main que vai chamar o initialize e o controller o print
 public class FileContext {

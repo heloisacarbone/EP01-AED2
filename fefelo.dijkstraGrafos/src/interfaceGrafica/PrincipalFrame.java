@@ -4,12 +4,19 @@
  */
 package interfaceGrafica;
 
-import controllers.Controller;
+import controllers.ControllerDijkstra;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
+
 import javax.swing.JFileChooser;
+
+import file.FileContext;
+import file.Text;
+import file.Xml;
+import grafo.Grafo;
 
 /**
  *
@@ -21,7 +28,7 @@ String arq = null;
      * Creates new form PrincipalFrame
      */
     public PrincipalFrame() {
-        ;
+        
         
         initComponents();
         this.setLocationRelativeTo(null);
@@ -128,7 +135,7 @@ String arq = null;
         lblExtensao.setEnabled(false);
         lblExtensao.setFocusable(false);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/logo-each.jpg"))); // NOI18N
+        //jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("src/imagens/logo-each.jpg"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -274,18 +281,22 @@ System.exit(0);        // TODO add your handling code here:
 
     private void btnDijkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDijkActionPerformed
       if(lblExtensao.getText().equals("txt")){
-         try {
-    			Controller.initializeGraphTXT(arq);
-    		} catch (Exception ex) {
-    			ex.printStackTrace();
-    		}
+	  	try {
+	  		FileContext fc = new FileContext();
+			fc.setFile(new Text());
+			fc.initialize(arq);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
       }
       else if(lblExtensao.getText().equals("xml")){
          try {
-    			Controller.initializeGraphXML(arq);
-    		} catch (Exception ex) {
-    			ex.printStackTrace();
-    		}
+        	FileContext fc = new FileContext();
+ 			fc.setFile(new Xml());
+ 			fc.initialize(arq);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
       }
       
       this.setVisible(false);

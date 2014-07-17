@@ -13,9 +13,12 @@ public class main {
     
     public static void main(String[] args) {
         // caso queira realizar testes com a parte gráfica descomente as 2 linahs de baixo e comente TODO o reste (inclusive a string ali de cima)
-        //PrincipalFrame frame = new PrincipalFrame();
-    	//   frame.setVisible(true);
-    	if (args.length != 0) {
+        
+    	PrincipalFrame frame = new PrincipalFrame();
+    	frame.setVisible(true);
+    	
+    	
+    	/*if (args.length != 0) {
     		file = args[0]; 
         }
     	
@@ -35,7 +38,7 @@ public class main {
     	} else {
     		System.out.println("O arquivo inserido não é valido, é preciso que seja xml ou txt.");
     		System.exit(0);
-    	}
+    	}*/
 
     }
        

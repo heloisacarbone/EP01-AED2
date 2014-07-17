@@ -22,7 +22,7 @@ import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
-import controllers.Controller;
+import controllers.ControllerDijkstra;
 
 public class Xml implements FileInterface {
 
@@ -71,8 +71,8 @@ public class Xml implements FileInterface {
         while (values.hasMoreTokens()) {
             String adj = values.nextToken();
             System.out.println("Adicionando o" + vertice + "adjacente a" + adj);
-            Controller.controllSetAdj(listaVertices, adj, vertice);
-            Controller.controllSetAdj(listaVertices, vertice, adj);
+            ControllerDijkstra.controllSetAdj(listaVertices, adj, vertice);
+            ControllerDijkstra.controllSetAdj(listaVertices, vertice, adj);
         }
 
     }
@@ -104,9 +104,9 @@ public class Xml implements FileInterface {
             }
         }
     }
-    Grafo grafo = Controller.graphGenerator(qtdVert, listaVertices);
-
-    Controller.initializeFactoryDijkstra(grafo, listaVertices, tipo, origem, numVertType, conjuntosBusca);
+    
+    Grafo grafo = new Grafo(listaVertices);
+    ControllerDijkstra.initializeFactoryDijkstra(grafo, listaVertices, tipo, origem, numVertType, conjuntosBusca);
 		
 	}
 
@@ -174,9 +174,9 @@ public class Xml implements FileInterface {
                 out = new FileOutputStream(new File("src/saidas/output.xml"));
                 xmlOut.output(doc, out);
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ControllerDijkstra.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ControllerDijkstra.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 		

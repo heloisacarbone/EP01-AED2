@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.IIOException;
+
 import grafo.Grafo;
 import grafo.Vertice;
 
@@ -90,70 +92,135 @@ public class Dijkstra {
             atual = temp;
             
             if (verticesremanescentes.isEmpty()) {
-                return;
+                break;
             }
         }
      }
 
     public Map<String, String> mapa(Grafo grafo){
-		Grafo minimap2 = new Grafo();
-		minimap2 = grafo;
-
+		Grafo minimap2 = new Grafo(grafo.getgrafo());
+		Map <String, List<Vertice>> apoio = new HashMap<String, List<Vertice>>();
+		for(Vertice vertice: grafo.getgrafo()){
+			List <Vertice> noref = new ArrayList<Vertice>(vertice.getadjlist());
+			apoio.put(vertice.getZ(), new ArrayList<Vertice>(noref));
+		}
+		System.out.println(apoio);
+			
+			
+		Double distParada = 0.0;
+        double teste2 = Double.POSITIVE_INFINITY;
+        List<Vertice> auxDist = grafo.getgrafo();
+        for (int p = 0; p < grafo.getgrafo().size() ; p++) {
+            Vertice auxVD = auxDist.get(p);
+            
+            if (fim.getZ().equals(auxVD.getZ())) {
+                teste2 = auxVD.getdist();
+            }
+		}
+        int intTeste2 = (int) teste2;
+		
 		String first = inicio.getZ();
-		String second = "1";
+		String second = "";
 		List<String> aux = new ArrayList<String>();
 		aux.add(first);
+		if(inicio.getadjlist().contains(fim)){
+            caminho.put(inicio.getZ(), fim.getZ());
+            return caminho;
+        }
 		do{
-			List<Vertice> minimap = new ArrayList(minimap2.getgrafo());
-			while(!second.equals(fim.getZ()) && !first.equals(fim.getZ())){
+			List<Vertice> minimap = new ArrayList<Vertice>(minimap2.getgrafo());
+			while(!second.equals(fim.getZ()) && !first.equals(fim.getZ()) && !aux.contains(second)){
+				System.out.println("LISTA " +aux);
+				System.out.println("Second " + second);
 				for( int p = 0; p < minimap.size(); p++) {
 					if(first.equals(minimap.get(p).getZ())) {
-						List <Vertice> adj2 = new ArrayList(minimap.get(p).getadjlist());
+						List <Vertice> adj2 = new ArrayList<Vertice>(minimap.get(p).getadjlist());
 						double menor = Double.POSITIVE_INFINITY;
 						if(adj2.size()>0){
+							second = "po";
+							String check = second;
+							boolean change = false;
 							for(int p2 = 0; p2 < adj2.size(); p2++) {
 								if(menor > adj2.get(p2).getdist() && !aux.contains((adj2.get(p2)).getZ())) {
 									menor = adj2.get(p2).getdist();
 									second = adj2.get(p2).getZ();
+									System.out.println("Second33 " + second);
+
 									}
 							}
-						aux.add(second);
-						caminho.put(first, second);
-						first = second;
-
-
-
-
-						if(second.equals(fim.getZ())) break;
-
-						}else{
-							for(String string: aux){
-								minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(string));
+							if(check.equals(second)) change = true;
+							if(change == true){
+								minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(aux.get(aux.size()-1)));
+								minimap2.retornaVertice(aux.get(aux.size()-1)).setadjlist(apoio.get(aux.get(aux.size()-1)));
+								distParada -= minimap2.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1)));
+								aux.remove(aux.size()-1);
+								caminho.remove(aux.get(aux.size()-1));
+								first = aux.get(aux.size()-1);
+								second = "";								
+							}else{
+								aux.add(second);
+								caminho.put(first, second);
+								first = second;
+								System.out.println("LISTA " +aux);
+								System.out.println("MAPA " +caminho);
+								System.out.println("Fim " + fim.getZ());
+								System.out.println("Second " + second);
+								distParada += minimap2.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1)));
 							}
-							aux.remove(aux.size()-1);
-							caminho.remove(aux.get(aux.size()-1));
-							first = aux.get(aux.size()-1);
-							second = "";
+						if(second.equals(fim.getZ())) break;
+						
+						}else{
+							try{	
+								minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(aux.get(aux.size()-1)));
+								minimap2.retornaVertice(aux.get(aux.size()-1)).setadjlist(apoio.get(aux.get(aux.size()-1)));
+								distParada -= minimap2.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1)));
+								aux.remove(aux.size()-1);
+								caminho.remove(aux.get(aux.size()-1));
+								first = aux.get(aux.size()-1);
+								second = "";
+							}catch(ArrayIndexOutOfBoundsException AIOOBException){
+								System.out.println("Aux is Empty !!!");
+
+								minimap2.retornaVertice(aux.get(aux.size()-1)).setadjlist(apoio.get(aux.get(aux.size()-1)));
+								break;
+							}finally{
+
+							}
 						}
 					}
 				}
 			}
-			double teste2 = minimap2.retornaVertice(aux.get(aux.size()-1)).getdist();
-                        double teste = 0;
-                        if(aux.size() > 2){
-                        teste =  (minimap2.retornaVertice(aux.get(aux.size()-2)).getdist() + grafo.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1))));
-                        }
-                        if(teste == teste2){
-				return caminho;
+			int intDistParada = distParada.intValue();
+            	if(intDistParada == intTeste2){
+            		return caminho;
 				}
-			for(String string: aux){
-				minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(string));
-			}
-			aux.remove(aux.size()-1);
-			caminho.remove(aux.get(aux.size()-1));
-			first = aux.get(aux.size()-1);
-			second = "";
-		}while(aux.size()>1);
+            	second = "";
+					if((aux.contains(fim.getZ()) && intDistParada != intTeste2)){
+						minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(aux.get(aux.size()-1)));
+						minimap2.retornaVertice(aux.get(aux.size()-1)).setadjlist(apoio.get(aux.get(aux.size()-1)));
+						distParada -= minimap2.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1)));
+						aux.remove(aux.size()-1);
+						caminho.remove(aux.get(aux.size()-1));
+						first = aux.get(aux.size()-1);
+						second = "";
+						
+					}
+					int count1 = minimap2.retornaVertice(first).getadjlist().size();
+					int count2 = 0;
+					for(Vertice k: minimap2.retornaVertice(first).getadjlist()){
+						if(aux.contains(k.getZ())) count2 ++;
+					}
+					if(count2 == count1){
+						minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(aux.get(aux.size()-1)));
+						minimap2.retornaVertice(aux.get(aux.size()-1)).setadjlist(apoio.get(aux.get(aux.size()-1)));
+						distParada -= minimap2.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1)));
+						aux.remove(aux.size()-1);
+						caminho.remove(aux.get(aux.size()-1));
+						first = aux.get(aux.size()-1);
+						second = "";
+					}
+					
+		}while(aux.size()>0);
 		return caminho;
 	}
 
