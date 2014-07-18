@@ -1,16 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package interfaceGrafica;
 
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
-/**
- *
- * @author Favoretti
- */
 public class Filtro extends FileFilter{
 
     @Override

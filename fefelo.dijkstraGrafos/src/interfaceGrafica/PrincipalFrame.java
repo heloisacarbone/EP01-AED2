@@ -5,6 +5,7 @@
 package interfaceGrafica;
 
 import controllers.ControllerDijkstra;
+import file.FileContext;
 
 import java.io.File;
 import java.io.FileReader;
@@ -13,7 +14,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.JFileChooser;
 
-import file.FileContext;
+
 import file.Text;
 import file.Xml;
 import grafo.Grafo;
@@ -49,6 +50,7 @@ String arq = null;
     private void initComponents() {
 
         jFileChooser2 = new javax.swing.JFileChooser();
+        jDialog1 = new javax.swing.JDialog();
         txtFinput = new javax.swing.JTextField();
         btnSelect = new javax.swing.JToggleButton();
         jLabel1 = new javax.swing.JLabel();
@@ -63,13 +65,25 @@ String arq = null;
         lblExtensao = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
-        jFileChooser2.setApproveButtonText("");
+        jFileChooser2.setApproveButtonText("Selecionar");
         jFileChooser2.setFileFilter(new Filtro());
         jFileChooser2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jFileChooser2ActionPerformed(evt);
             }
         });
+        jFileChooser2.getAccessibleContext().setAccessibleDescription("");
+
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
+        jDialog1.getContentPane().setLayout(jDialog1Layout);
+        jDialog1Layout.setHorizontalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jDialog1Layout.setVerticalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -135,7 +149,7 @@ String arq = null;
         lblExtensao.setEnabled(false);
         lblExtensao.setFocusable(false);
 
-        //jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("src/imagens/logo-each.jpg"))); // NOI18N
+       // jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/logo-each.jpg"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -217,7 +231,7 @@ String arq = null;
 
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
  // TODO add your handling code here:
-        
+            
         int returnVal = jFileChooser2.showOpenDialog(this);
  
         String tipo = null;
@@ -231,6 +245,7 @@ String arq = null;
                 txtFinput.setText(arq);
                 txtFinput.setSize(6,20);
                 atxConteudo.read( new FileReader( file.getAbsolutePath() ), null );
+                jFileChooser2.getCurrentDirectory();
             } catch (Exception e) {
                 System.out.println("problem accessing file"+file.getAbsolutePath());
             }
@@ -254,7 +269,10 @@ String arq = null;
             lblExtensao.setText("xml");
             tipo = controllers.ControllerTipos.verificaTipoXml(arq);
          }
-        
+        if(tipo == null){
+        lblType.setText("Arquivo inválido");
+        lblType.setVisible(true);
+        }
         if(tipo.equals("1") || tipo.equals("2") || tipo.equals("3") ){
         lblTipo.setVisible(true);
         lblType.setText(tipo);
@@ -285,15 +303,17 @@ System.exit(0);        // TODO add your handling code here:
 	  		FileContext fc = new FileContext();
 			fc.setFile(new Text());
 			fc.initialize(arq);
+                       
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
       }
       else if(lblExtensao.getText().equals("xml")){
          try {
-        	FileContext fc = new FileContext();
- 			fc.setFile(new Xml());
- 			fc.initialize(arq);
+        	 FileContext fc = new FileContext();
+                 fc.setFile(new Xml());
+ 		 fc.initialize(arq);
+                        
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -311,42 +331,13 @@ System.exit(0);        // TODO add your handling code here:
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PrincipalFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PrincipalFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PrincipalFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PrincipalFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PrincipalFrame().setVisible(true);
-            }
-        });
-    }
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea atxConteudo;
     private javax.swing.JToggleButton btnDijk;
     private javax.swing.JToggleButton btnSair;
     private javax.swing.JToggleButton btnSelect;
+    private javax.swing.JDialog jDialog1;
     private javax.swing.JFileChooser jFileChooser2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

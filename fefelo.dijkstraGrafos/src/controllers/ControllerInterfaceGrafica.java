@@ -6,12 +6,10 @@ import interfaceGrafica.windowGrafo;
 
 import java.util.Map;
 
-
-
 public class ControllerInterfaceGrafica {
-	public static void createWindow(Grafo grafo, Map<String, String> caminho, Vertice inicio, Vertice fim) {
+	public static void createWindow(Grafo grafo, Map<String, String> caminho, Vertice inicio, Vertice fim, int qtdGrafos) {
 		int numVertices = grafo.getgrafo().size();
-		windowGrafo window = new windowGrafo(grafo.getgrafo(), caminho, numVertices*100, inicio, fim);
+		windowGrafo window = new windowGrafo(grafo.getgrafo(), caminho, numVertices*100, inicio, fim, qtdGrafos);
 		
 	}
 }

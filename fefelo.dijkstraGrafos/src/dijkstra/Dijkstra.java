@@ -23,6 +23,7 @@ public class Dijkstra {
     private List<Vertice> adj;
     private Map<String, String> caminho = new HashMap<String, String>();
     private Vertice atual;
+    public Map <String, List<Vertice>> apoio = new HashMap<String, List<Vertice>>();
 
     public void inicio(Vertice x) {	// Começo do caminho
         this.inicio = x;
@@ -99,14 +100,6 @@ public class Dijkstra {
 
     public Map<String, String> mapa(Grafo grafo){
 		Grafo minimap2 = new Grafo(grafo.getgrafo());
-		Map <String, List<Vertice>> apoio = new HashMap<String, List<Vertice>>();
-		for(Vertice vertice: grafo.getgrafo()){
-			List <Vertice> noref = new ArrayList<Vertice>(vertice.getadjlist());
-			apoio.put(vertice.getZ(), new ArrayList<Vertice>(noref));
-		}
-		System.out.println(apoio);
-			
-			
 		Double distParada = 0.0;
         double teste2 = Double.POSITIVE_INFINITY;
         List<Vertice> auxDist = grafo.getgrafo();
@@ -124,14 +117,15 @@ public class Dijkstra {
 		List<String> aux = new ArrayList<String>();
 		aux.add(first);
 		if(inicio.getadjlist().contains(fim)){
-            caminho.put(inicio.getZ(), fim.getZ());
+            caminho.clear();
+			caminho.put(inicio.getZ(), fim.getZ());
             return caminho;
+            
         }
 		do{
-			List<Vertice> minimap = new ArrayList<Vertice>(minimap2.getgrafo());
+			
 			while(!second.equals(fim.getZ()) && !first.equals(fim.getZ()) && !aux.contains(second)){
-				System.out.println("LISTA " +aux);
-				System.out.println("Second " + second);
+				List<Vertice> minimap = new ArrayList<Vertice>(minimap2.getgrafo());
 				for( int p = 0; p < minimap.size(); p++) {
 					if(first.equals(minimap.get(p).getZ())) {
 						List <Vertice> adj2 = new ArrayList<Vertice>(minimap.get(p).getadjlist());
@@ -141,17 +135,18 @@ public class Dijkstra {
 							String check = second;
 							boolean change = false;
 							for(int p2 = 0; p2 < adj2.size(); p2++) {
-								if(menor > adj2.get(p2).getdist() && !aux.contains((adj2.get(p2)).getZ())) {
-									menor = adj2.get(p2).getdist();
+								Double fc = Double.POSITIVE_INFINITY;
+								Double fc2 = minimap2.getPesoAresta(minimap.get(p),adj2.get(p2));
+								if(fc2 != 0) fc = fc2;
+								if(menor > fc && !aux.contains((adj2.get(p2)).getZ())) {
+									menor = fc;
 									second = adj2.get(p2).getZ();
-									System.out.println("Second33 " + second);
-
 									}
 							}
 							if(check.equals(second)) change = true;
 							if(change == true){
 								minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(aux.get(aux.size()-1)));
-								minimap2.retornaVertice(aux.get(aux.size()-1)).setadjlist(apoio.get(aux.get(aux.size()-1)));
+								Restaurar(minimap2.retornaVertice(aux.get(aux.size()-1)));
 								distParada -= minimap2.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1)));
 								aux.remove(aux.size()-1);
 								caminho.remove(aux.get(aux.size()-1));
@@ -161,10 +156,6 @@ public class Dijkstra {
 								aux.add(second);
 								caminho.put(first, second);
 								first = second;
-								System.out.println("LISTA " +aux);
-								System.out.println("MAPA " +caminho);
-								System.out.println("Fim " + fim.getZ());
-								System.out.println("Second " + second);
 								distParada += minimap2.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1)));
 							}
 						if(second.equals(fim.getZ())) break;
@@ -172,7 +163,7 @@ public class Dijkstra {
 						}else{
 							try{	
 								minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(aux.get(aux.size()-1)));
-								minimap2.retornaVertice(aux.get(aux.size()-1)).setadjlist(apoio.get(aux.get(aux.size()-1)));
+								Restaurar(minimap2.retornaVertice(aux.get(aux.size()-1)));
 								distParada -= minimap2.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1)));
 								aux.remove(aux.size()-1);
 								caminho.remove(aux.get(aux.size()-1));
@@ -189,6 +180,19 @@ public class Dijkstra {
 						}
 					}
 				}
+//				int count = 0;
+//				for(Vertice xz: grafo.getgrafo()){
+//					if(aux.contains(xz.getZ())){
+//						count ++;
+//					}	
+//				}
+//				if(count == 1){
+//					for(Vertice xz: minimap2.getgrafo()){
+//						if(!xz.getZ().equals(inicio)){
+//							xz.setadjlist(apoio.get(xz.getZ()));
+//						}
+//					}
+//				}
 			}
 			int intDistParada = distParada.intValue();
             	if(intDistParada == intTeste2){
@@ -197,7 +201,7 @@ public class Dijkstra {
             	second = "";
 					if((aux.contains(fim.getZ()) && intDistParada != intTeste2)){
 						minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(aux.get(aux.size()-1)));
-						minimap2.retornaVertice(aux.get(aux.size()-1)).setadjlist(apoio.get(aux.get(aux.size()-1)));
+						Restaurar(minimap2.retornaVertice(aux.get(aux.size()-1)));
 						distParada -= minimap2.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1)));
 						aux.remove(aux.size()-1);
 						caminho.remove(aux.get(aux.size()-1));
@@ -212,7 +216,7 @@ public class Dijkstra {
 					}
 					if(count2 == count1){
 						minimap2.retornaVertice(aux.get(aux.size()-2)).rva(minimap2.retornaVertice(aux.get(aux.size()-1)));
-						minimap2.retornaVertice(aux.get(aux.size()-1)).setadjlist(apoio.get(aux.get(aux.size()-1)));
+						Restaurar(minimap2.retornaVertice(aux.get(aux.size()-1)));
 						distParada -= minimap2.getPesoAresta(minimap2.retornaVertice(aux.get(aux.size()-2)), minimap2.retornaVertice(aux.get(aux.size()-1)));
 						aux.remove(aux.size()-1);
 						caminho.remove(aux.get(aux.size()-1));
@@ -259,4 +263,18 @@ public class Dijkstra {
             }
         }
     }
+    private void Restaurar(Vertice vertice){
+    	List <Vertice> rest = new ArrayList<Vertice>(apoio.get(vertice.getZ()));
+    	for(Vertice vertice2: rest){
+    		boolean equal = false;
+    			for(Vertice vertice3: vertice.getadjlist()){
+    				if(vertice2.getZ().equals(vertice3.getZ())){
+    					equal = true;
+    				}
+    			}
+				if (!equal){
+					vertice.setadj(vertice2);
+				}
+    	}
+   }
 }

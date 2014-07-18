@@ -15,8 +15,11 @@ import javax.swing.*;
 public class windowGrafo extends JFrame{	
 
 	public windowGrafo(final List<Vertice> verticesGrafo, final Map<String, String> caminhos, 
-			int size, final Vertice inicio, final Vertice fim) {
-		VisualGrafo visual = new VisualGrafo(); 
+			int size, final Vertice inicio, final Vertice fim, final int qtdGrafos) {
+            
+            VisualGrafo visual = new VisualGrafo(); 
+            
+		
 		this.setLayout(null);
 		Canvas canvas = new Canvas(){
 			@Override
@@ -54,6 +57,9 @@ public class windowGrafo extends JFrame{
                 visual.getContentPane().add(canvas);
                 visual.pack();
                 visual.setVisible(true);
+                
+                
+                
 		
 	}
 
